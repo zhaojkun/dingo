@@ -1,0 +1,81 @@
+{{ extends "/default.layout" }}
+
+{{ define "body"}}
+<div class="breadcrumb grey lighten-3">
+  <h6>
+    {{.Title}}
+  </h6>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col s12 m6 l3">
+      <div class="card">
+        <div class="card-content black-text">
+          <span class="card-title">Welcome</span>
+          <p>Welcome, <strong>{{.User.Name}}</strong>.</p>
+        </div>
+      </div>
+
+    <div class="card center">
+      <div class="card-content blue white-text">
+        <p class="card-stats-title"><i class="mdi-action-assignment"></i> Posts</p>
+        <h4 class="card-stats-number">{{.Statis.Articles}}</h4>
+      </div>
+    </div>
+
+    <div class="card center">
+      <div class="card-content indigo white-text">
+        <p class="card-stats-title"><i class="mdi-communication-comment"></i> Comments</p>
+        <h4 class="card-stats-number">{{.Statis.Comments}}</h4>
+      </div>
+    </div>
+
+    <div class="card center">
+      <div class="card-content blue-grey white-text">
+        <p class="card-stats-title"><i class="mdi-file-attachment"></i> Files</p>
+        <h4 class="card-stats-number">{{.Statis.Files}}</h4>
+      </div>
+    </div>
+
+    <div class="card center">
+      <div class="card-content cyan white-text">
+        <p class="card-stats-title"><i class="mdi-social-people"></i> Memory Used</p>
+        <h4 class="card-stats-number">{{.Statis.Readers}}</h4>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="col s12 m9 l9">
+    <div class="card">
+      <div class="card-content black-text">
+        <span class="card-title">New Messages</span>{{range .Messages}}
+        <div class="msg relative {{.Type}}">
+          <span class="time btn-small blue darken-1 white-text">{{DateFormat .CreateTime "%b %d, %I:%M %p"}}</span>
+          <div class="data">{{Html .Data}}</div>
+        </div>{{end}}{{if lt (len .Messages) 1}}
+        <p>No new messages.</p>
+        {{end}}
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}
+
+{{ define "after_footer" }}
+<script>
+$(document).ready(function(){
+  $(".read").on("click",function(){
+    var $this = $(this);
+    $.post($this.attr("href"),function(json){
+      if(json.res){
+        $this.parent().remove();
+      }
+    });
+    return false;
+  });
+});
+</script>
+{{end}}

@@ -1,0 +1,211 @@
+{{ extends "/default.layout" }}
+
+{{ define "body"}}
+<div class="breadcrumb grey lighten-3">
+  <h6>
+    {{.Title}}
+  </h6>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col s12 m12 l12">
+      <div class="card">
+        <div class="card-content">
+
+          <div class="row">
+            <div class="col s12">
+              <ul class="tabs">
+                <li class="tab col s3"><a class="active" href="#general">General</a></li>
+                <li class="tab col s3"><a href="#content">Content</a></li>
+                <li class="tab col s3"><a href="#nav">Navigation</a></li>
+                <li class="tab col s3"><a href="#custom">Custom</a></li>
+              </ul>
+            </div>
+            <div id="general" class="col s12">
+              <form id="setting-form" class="setting-form form form-align setting-panel" action="/admin/setting/" method="post">
+                <p class="item">
+                <label for="site-url">Site URL</label>
+                <input id="site-url" class="ipt" type="url" name="site_url" value="{{Setting `site_url`}}"/>
+                </p>
+                <p class="item">
+                <label for="site-title">Site Title</label>
+                <input id="site-title" class="ipt" type="text" name="title" value="{{Setting `title`}}"/>
+                </p>
+                <p class="item">
+                <label for="site-sub-title">Site Subtitle</label>
+                <input id="site-sub-title" class="ipt" type="text" name="sub_title" value="{{Setting `sub_title`}}"/>
+                </p>
+                <p class="item">
+                <label for="site-keywords">Meta Keyword</label>
+                <input id="site-keywords" class="ipt" type="text" name="site_keywords" value="{{Setting `site_keywords`}}"/>
+                </p>
+                <p class="item">
+                <label for="site-desc">Meta Description</label>
+                <input id="site-desc" class="ipt" type="text" name="description" value="{{Setting `description`}}"/>
+                </p>
+                <p>
+                <label>&nbsp;</label>
+                <button class="btn waves-effect waves-light blue">Save</button>
+                </p>
+              </form>
+            </div>
+            <div id="content" class="col s12">
+              <form id="setting-content-form" class="setting-form form form-align setting-panel" action="/admin/setting/" method="post">
+                <p class="item">
+                <label for="article-size">Posts per page</label>
+                <input id="article-size" class="ipt" type="number" name="article_size" value="{{Setting `article_size`}}" max="10" min="3" required="required"/>
+                </p>
+                <p class="item">
+                <label for="popular-size">Posts in the popular list</label>
+                <input id="popular-size" class="ipt" type="number" name="popular_size" value="{{Setting `popular_size`}}" max="10" min="3"  required="required"/>
+                </p>
+                <p class="item">
+                <label for="recent-comment-size">Recent commented posts</label>
+                <input id="recent-comment-size" class="ipt" type="number" name="recent_comment_size" value="{{Setting `recent_comment_size`}}" max="10" min="3" required="required"/>
+                </p>
+                <p class="item">
+                <label for="go-markdown">Rendering Markdown by Go?</label>
+                <input id="go-markdown" class="ipt" type="text" name="enable_go_markdown" value="{{Setting `enable_go_markdown`}}"/>
+                <input type="hidden" name="enable_go_markdown_def" value="false"/>
+                </p>
+                <p>
+                <button class="btn waves-effect waves-light blue">Save</button>
+                </p>
+              </form>
+            </div>
+            <div id="nav" class="col s12">
+
+              <form id="setting-nav-form" class="setting-form form form-align setting-panel" action="/admin/setting/nav/" method="post">{{range .Navigators}}
+                <div class="row">
+                  <div class="input-field col s1">
+                    <input id="order" name="order" type="number" class="validate" value="">
+                    <label for="order">Order</label>
+                  </div>
+                  <div class="input-field col s3">
+                    <input id="text" name="text" type="text" class="validate" value="">
+                    <label for="label">Label</label>
+                  </div>
+                  <div class="input-field col s3">
+                    <input id="title" name="title" type="text" class="validate" value="{{.Key}}">
+                    <label for="title">Title</label>
+                  </div>
+                  <div class="input-field col s3">
+                    <input id="link" name="link" type="text" class="validate" value="{{.Value}}">
+                    <label for="link">URL</label>
+                  </div>
+                  <div class="input-field col s12 m2 l2">
+                    <a id="del" class="btn waves-effect waves-light red right" href="#">Delete</a>
+                  </div>
+                </div>
+                {{end}}
+
+                <div class="row">
+                  <button class="btn waves-effect waves-light blue">Save</button>
+                  <a class="btn waves-effect waves-light green" id="add" rel="#nav-item">Add</a>
+                </div>
+
+              </form>
+
+              <script type="text/template" id="nav-item">
+<div class="row">
+                  <div class="input-field col s1">
+                    <input id="order" name="order" type="number" class="validate" value="1">
+                    <label for="order">Order</label>
+                  </div>
+                  <div class="input-field col s3">
+                    <input id="text" name="text" type="text" class="validate" value="">
+                    <label for="label">Label</label>
+                  </div>
+                  <div class="input-field col s3">
+                    <input id="title" name="title" type="text" class="validate" value="">
+                    <label for="title">Title</label>
+                  </div>
+                  <div class="input-field col s3">
+                    <input id="link" name="link" type="text" class="validate" value="">
+                    <label for="link">URL</label>
+                  </div>
+                  <div class="input-field col s12 m2 l2">
+                    <a id="del" class="btn waves-effect waves-light red right" href="#">Delete</a>
+                  </div>
+                </div>
+              </script>
+
+            </div>
+            <div id="custom" class="col s12">
+              <form id="setting-custom-form" class="setting-form form form-align setting-panel" action="/admin/setting/custom/" method="post">{{range .Custom}}
+                <div class="row">
+                  <div class="input-field col s5">
+                    <input id="key" name="key" type="text" class="validate" value="{{.Key}}">
+                    <label for="order">Key</label>
+                  </div>
+                  <div class="input-field col s5">
+                    <input id="value" name="value" type="text" class="validate" value="{{.Value}}">
+                    <label for="label">Value</label>
+                  </div>
+                  <div class="input-field col s12 m2 l2">
+                    <a id="del" class="btn waves-effect waves-light red right" href="#">Delete</a>
+                  </div>
+                </div>
+
+                {{end}}
+                <div class="row">
+                  <button class="btn waves-effect waves-light blue">Save</button>
+                  <a class="btn waves-effect waves-light green" id="add" rel="#custom-item">Add</a>
+                </div>
+
+              </form>
+
+              <script type="text/template" id="custom-item">
+                <div class="row">
+                  <div class="input-field col s5">
+                    <input id="key" name="key" type="text" class="validate" value="">
+                    <label for="order">Key</label>
+                  </div>
+                  <div class="input-field col s5">
+                    <input id="value" name="value" type="text" class="validate" value="">
+                    <label for="label">Value</label>
+                  </div>
+                  <div class="input-field col s12 m2 l2">
+                    <a id="del" class="btn waves-effect waves-light red right" href="#">Delete</a>
+                  </div>
+                </div>
+              </script>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}
+
+{{ define "after_footer" }}
+<script>
+
+  $(document).ready(function(){
+    $('ul.tabs').tabs();
+  });
+
+    $(function () {
+        $('.setting-form').ajaxForm(function (json) {
+            if (json.res) {
+              Materialize.toast("Saved", 2500, "green");
+            } else {
+              Materialize.toast(json.msg, 2500, "green");
+            }
+        }).on("click","#add",function(e){
+            e.preventDefault();
+            $(this).parent().parent().prepend($($(this).attr("rel")).html());
+        }).on("click","#del",function(e){
+            e.preventDefault();
+            if(confirm("Delete this item？")){
+                $(this).parent().parent().remove();
+            }
+        })
+    })
+</script>
+{{ end }}

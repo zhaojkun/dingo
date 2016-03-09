@@ -1,0 +1,60 @@
+{{ extends "/default.layout" }}
+
+{{ define "body"}}
+<div class="breadcrumb grey lighten-3">
+  <h6>
+    {{.Title}}
+  </h6>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col s12 m6 l3">
+      <div class="card center">
+        <div class="card-content blue white-text">
+          <p class="card-stats-title"><i class="mdi-notification-sync"></i> Goroutine Count</p>
+          <h4 class="card-stats-number">{{.Monitor.NumGoroutine}}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col s12 m6 l3">
+      <div class="card center">
+        <div class="card-content blue white-text">
+          <p class="card-stats-title"><i class="mdi-hardware-memory"></i> HeapSys</p>
+          <h4 class="card-stats-number">{{.Monitor.MemSys}}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col s12 m6 l3">
+      <div class="card center">
+        <div class="card-content blue white-text">
+          <p class="card-stats-title"><i class="mdi-hardware-memory"></i> HeapAlloc</p>
+          <h4 class="card-stats-number">{{.Monitor.MemHeap}}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col s12 m6 l3">
+      <div class="card center">
+        <div class="card-content blue white-text">
+          <p class="card-stats-title"><i class="mdi-hardware-memory"></i> NextGC</p>
+          <h4 class="card-stats-number">{{.Monitor.MemGc}}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col s12 m6 l3">
+      <div class="card center">
+        <div class="card-content blue white-text">
+          <p class="card-stats-title"><i class="mdi-image-timer-auto"></i> LastGC</p>
+          <h4 class="card-stats-number">{{.Monitor.LastGcTime}}</h4>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{{ end }}
+

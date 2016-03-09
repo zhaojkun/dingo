@@ -1,0 +1,174 @@
+{{ extends "/default.layout" }}
+
+{{ define "body"}}
+<div class="breadcrumb grey lighten-3">
+  <h6>
+    {{.Title}}
+  </h6>
+</div>
+
+<style>
+    @import "//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css";
+    @import "/static/css/codemirror.css";
+</style>
+
+<div class="content">
+  <div class="row">
+    <div class="col s12 m12 l12">
+      <div class="card">
+        <div class="card-content">
+          <form id="article-form" class="" action="#" method="post">
+            <div class="row">
+              <div class="col s12">
+                <div class="">
+                  <label for="title">Post Title</label>
+                  <input class="ipt title" id="title" type="text" required="required" name="title" placeholder="Title" value="{{.Post.Title}}"/>
+                  <textarea name="content" id="content" class="ipt">{{Html .Post.Markdown}}</textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="row">
+                <div class="input-field col s3">
+                  <input placeholder="Post URL" id="first_name" name="slug" type="text" class="validate" value="{{.Post.Slug}}">
+                  <label for="slug">Post URL</label>
+                </div>
+                <div class="input-field col s3">
+                  <input placeholder="Category" id="first_name" name="category" type="text" class="validate" value="{{.Post.Category}}">
+                  <label for="category">Category</label>
+                </div>
+                <div class="input-field col s6">
+                  <input placeholder="Tags" id="first_name" name="tag" type="text" class="validate" value="{{.Post.TagString}}">
+                  <label for="tag">Tags</label>
+                </div>
+                <div class="input-field col s3">
+                  <div class="col s3">
+                    <button id="attach-show" class="btn waves-effect waves-light green">Upload</button>
+                  </div>
+                </div>
+                <div class="input-field col s3">
+                  <input type="checkbox" id="comment" name="comment" {{ if .Post.IsComment }}checked{{ end }}/>
+                  <label for="comment">Allow Comment</label>
+                </div>
+                <div class="input-field col s3">
+                  <input type="checkbox" id="publish" name="status" {{ if .Post.IsPublished }}checked{{ end }}/>
+                  <label for="publish">Publish</label>
+                </div>
+
+              </div>
+              <div class="center">
+                <button class="btn waves-effect waves-light blue">Save</button>
+              </div>
+            </div>
+          </form>
+
+          <form class="form hide" id="attach-form" action="/admin/files/upload/" enctype="multipart/form-data" method="post">
+              <input id="attach-upload" type="file" name="file"/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{{end}}
+
+
+{{ define "after_footer" }}
+<script src="/static/lib/validate.min.js"></script>
+<script src="/static/js/upload.js"></script>
+<script src="/static/lib/highlight.min.js"></script>
+<script src="/static/lib/simplemde.min.js"></script>
+<script>
+ $(document).ready(function() {
+    $('select:not([multiple])').material_select();
+  });
+
+$(function () {
+  var simplemde = new SimpleMDE({
+    element: $("#content")[0],
+    renderingConfig: {
+      codeSyntaxHighlighting: true
+    },
+    toolbar: [{
+      name: "bold",
+      action: SimpleMDE.toggleBold,
+      className: "fa fa-bold",
+      title: "Bold"
+    }, {
+      name: "italic",
+      action: SimpleMDE.toggleItalic,
+      className: "fa fa-italic",
+      title: "Italic"
+    }, {
+      name: "heading",
+      action: SimpleMDE.toggleHeadingSmaller,
+      className: "fa fa-header",
+      title: "Heading"
+    }, {
+      name: "code",
+      action: SimpleMDE.toggleCodeBlock,
+      className: "fa fa-code",
+      title: "CodeBlock"
+    }, {
+      name: "unordered-list",
+      action: SimpleMDE.toggleUnorderedList,
+      className: "fa fa-list-ul",
+      title: "UnorderedList"
+    }, {
+      name: "ordered-list",
+      action: SimpleMDE.toggleOrderedList,
+      className: "fa fa-list-ol",
+      title: "OrderedList"
+    }, {
+      name: "table",
+      action: SimpleMDE.drawTable,
+      className: "fa fa-table",
+      title: "Table"
+    }, {
+      name: "preview",
+      action: SimpleMDE.togglePreview,
+      className: "fa fa-eye no-disable",
+      title: "Preview"
+    }, {
+      name: "side-by-side",
+      action: SimpleMDE.toggleSideBySide,
+      className: "fa fa-columns no-disable no-mobile",
+      title: "Toggle Side by Side"
+    }, {
+      name: "fullscreen",
+      action: SimpleMDE.toggleFullScreen,
+      className: "fa fa-arrows-alt no-disable no-mobile",
+      title: "Toggle Fullscreen"
+    }, {
+      name: "image",
+      action: function (editor) {
+        var cm = editor.codemirror;
+        var doc = cm.getDoc();
+        $('#attach-upload').trigger("click");
+      },
+      className: "fa fa-image",
+      title: "ImageUpload"
+    }]
+  });
+        new FormValidator("article-form", [
+            {"name": "slug", "rules": "alpha_dash"}
+        ], function (errors, e) {
+            e.preventDefault();
+            $('.invalid').hide();
+            if (errors.length) {
+                $("#" + errors[0].id + "-invalid").removeClass("hide").show();
+                return;
+            }
+            $('#article-form').ajaxSubmit(function (json) {
+                if (json.res) {
+                  Materialize.toast("Content saved", 2500, "green");
+                } else {
+                  Materialize.toast("Error: " + json.msg, 2500, "red");
+                }
+            });
+        });
+        initUpload("#article-submit");
+    });
+</script>
+{{end}}

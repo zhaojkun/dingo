@@ -1,0 +1,54 @@
+<section id="comments">
+
+  <div id="comment" class="relative clear">
+    <span class="right lbl lbl-red comments"><a href="{{.Link}}#comment">{{.Content.CommentNum}}</a></span>
+    <h4 id="comment-title">Comments</h4>
+    <div id="comment-list">{{range .Comments}}{{if .IsValid}}
+      <div class="comment clear" id="comment-{{.Id}}">
+        <img class="c-avatar left" src="{{.Avatar}}" alt="{{.Author}}"/>
+        <div class="c-section">
+          <div class="c-meta clear">
+            <a class="c-reply lbl right" href="#" rel="{{.Id}}">Reply</a>
+            <p><a class="c-author{{if .IsAdmin}} admin{{end}}" href="{{.Url}}" target="_blank">{{.Author}}{{if .IsAdmin}}&nbsp;&nbsp;(admin){{end}}</a></p>
+            <p><span class="c-time">{{DateFormat .CreateTime "%B %d, %Y at %H:%M %p"}}</span></p>
+          </div>
+          <section class="c-content">{{Html .Content}}</section>{{if .ParentMd}}
+          <div class="c-p-md markdown">{{Html .ParentMd}}</div>{{end}}
+        </div>
+      </div>{{end}}{{end}}
+    </div>
+    <div id="comment-show" class="text-center">{{if .Content.IsComment}}
+      <button class="btn btn-green enable center">Comment</button>{{else}}
+      <button class="btn btn-red">Comment Closed</button>{{end}}
+    </div>{{if .Content.IsComment}}
+    <form id="comment-form" class="hide clear text-center form" action="/comment/{{.Content.Id}}/" method="post">
+      <p class="item"><input class="ipt ipt-half" type="text" name="user" required="required" placeholder="Name" id="comment-author"/></p>
+      <p class="item"><input class="ipt ipt-half" id="email" type="email" name="email" required="required" placeholder="Email" id="comment-email"/></p>
+      <p class="item"><input class="ipt ipt-half" id="website" type="url" name="url" placeholder="Website" id="comment-url"/></p>
+      <input id="comment-parent" type="hidden" value="0" name="pid"/>
+      <textarea class="ipt" name="content" id="comment-content" required="required"></textarea>
+      <button class="btn btn-blue left">Submit</button>
+      <button class="btn btn-green cancel-reply left" type="button">Cancel</button>
+    </form>{{end}}
+    <script type="text/template" id="comment-tpl">
+<div class="comment clear">
+            <img class="c-avatar left" src="{{.Avatar}}" alt=""/>
+            <div class="c-section">
+                <div class="c-meta clear">
+                    <a class="c-reply lbl right" href="#" rel="">Reply</a>
+                    <p><a class="c-author " href="{{.Url}}" target="_blank"></a></p>
+                    <p>
+                        <span class="c-time">Now</span>
+                        <span class="c-check">Your comment is awaiting moderation.
+</span>
+                    </p>
+                </div>
+                <section class="c-content"></section>
+                <div class="c-p-md markdown"></div>
+            </div>
+        </div>
+    </script>
+
+  </div>
+
+</section>

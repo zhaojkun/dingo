@@ -1,0 +1,95 @@
+{{ extends "/home.layout" }}
+
+{{ define "content"}}
+<div id="article-container" class="clear container960">
+  <section id="main">
+    <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
+      {{with .Article}}
+      <div class="article-inner">
+        <header class="article-header">
+          <a href="{{ .Url }}">
+            <h1 class="article-title" itemprop="name">
+              {{ .Title }}
+            </h1>
+          </a>
+          <div class="article-meta">
+            <div class="article-date">
+              <i class="fa fa-calendar"></i>
+              <time datetime="{{ .PublishedAt }}" itemprop="datePublished">{{DateFormat .PublishedAt "%m %b, %Y"}}</time>
+            </div>
+
+            <div class="article-category">
+              <i class="fa fa-tags"></i>
+              {{ range .Tags }}
+              <a class="article-category-link" href="{{ .Url }}">{{.Name}}</a>
+              {{ end }}
+            </div>
+
+            <div class="article-meta">
+              <i class="fa fa-eye"></i>
+              {{ .Hits }}
+            </div>
+
+            <div class="article-meta">
+              <i class="fa fa-comment"></i>
+              {{ .CommentNum }}
+            </div>
+          </div>
+        </header>
+        <div class="article-entry" itemprop="articleBody">
+            {{Html .Html}}
+        </div>
+      </div>
+      {{end}}
+
+      <div class="pager text-center" id="article-pager">
+        {{if .Pager.IsNext}}<a href="/p/{{.Pager.Next}}/" class="item left">Older Posts</a>{{end}}
+        {{if .Pager.IsPrev}}<a href="/p/{{.Pager.Prev}}/" class="item right">Newer Posts</a>{{end}}
+      </div>
+
+    </article>
+
+    {{ include "comment.html" }}
+
+  </section>
+
+</div>
+{{end}}
+
+
+{{ define "sidebar"}}
+<aside id="sidebar">
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">recents</h3>
+    <div class="widget">
+      <ul id="recent-post" class="">
+        {{range .RecentArticles}}
+        <li>
+          <div class="item-inner">
+            <p class="item-category"><a class="article-category-link" href="">LifeStyle</a></p>
+            <p class="item-title"><a href="{{.Url}}" class="title">{{.Title}}</a></p>
+            <p class="item-date"><time datetime="{{ DateFormat .PublishedAt "%Y-%m-%d %H:%M"}}" itemprop="datePublished">{{ DateFormat .PublishedAt "%Y-%m-%d %H:%M"}}</time></p>
+          </div>
+        </li>
+        {{end}}
+      </ul>
+    </div>
+  </div>
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">tags</h3>
+    <div class="widget">
+      <ul class="tag-list">
+        {{range .Tags}}
+        <li class="tag-list-item">
+          <a class="tag-list-link" href="{{.Url}}">{{.Name}}</a>
+          <span class="tag-list-count">2</span>
+        </li>
+        {{end}}
+      </ul>
+    </div>
+  </div>
+
+</aside>
+{{ end }}

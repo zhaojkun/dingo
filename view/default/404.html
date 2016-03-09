@@ -1,0 +1,62 @@
+{{ extends "/home.layout" }}
+
+{{ define "content"}}
+<section id="main">
+
+  <article class="article article-type-post" itemscope="" itemprop="blogPost">
+    <div class="article-inner">
+      <header class="article-header">
+        <h1 class="article-title" itemprop="name">
+          Oops! That page can not be found.
+        </h1>
+      </header>
+      <div class="article-entry" itemprop="articleBody">
+        <p>We couldn't find the page you were looking for. This is either because:</p>
+        <ul>
+          <li>There is an error in the URL entered into your web browser. Please check the URL and try again.</li>
+          <li>The page you are looking for has been moved or deleted.</li>
+        </ul>
+        <p>You can return to our homepage by clicking <a href="/">here</a>.</p>
+      </div>
+    </div>
+  </article>
+</section>
+{{end}}
+
+
+{{ define "sidebar"}}
+<aside id="sidebar">
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">recents</h3>
+    <div class="widget">
+      <ul id="recent-post" class="">
+        {{range .RecentArticles}}
+        <li>
+          <div class="item-inner">
+            <p class="item-category"><a class="article-category-link" href="">LifeStyle</a></p>
+            <p class="item-title"><a href="{{.Link}}" class="title">{{.Title}}</a></p>
+            <p class="item-date"><time datetime="{{ DateInt64 .CreateTime "YYYY-MM-DD HH:mm"}}" itemprop="datePublished">{{ DateInt64 .CreateTime "YYYY-MM-DD"}}</time></p>
+          </div>
+        </li>
+        {{end}}
+      </ul>
+    </div>
+  </div>
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">tags</h3>
+    <div class="widget">
+      <ul class="tag-list">
+        {{range .Tags}}
+        <li class="tag-list-item">
+          <a class="tag-list-link" href="{{.Link}}">{{.Name}}</a>
+          <span class="tag-list-count">2</span>
+        </li>
+        {{end}}
+      </ul>
+    </div>
+  </div>
+
+</aside>
+{{ end }}

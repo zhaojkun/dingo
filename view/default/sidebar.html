@@ -1,0 +1,37 @@
+<aside id="sidebar">
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">recents</h3>
+    <div class="widget">
+      <ul id="recent-post" class="">
+        {{range .RecentArticles}}
+        <li>
+          <div class="item-inner">
+            <p class="item-category">
+              {{ range .GetTags }}
+              <a class="article-category-link" href="{{ .Url }}">{{.Name}}</a>
+              {{ end }}
+            </p>
+            <p class="item-title"><a href="{{.Link}}" class="title">{{.Title}}</a></p>
+            <p class="item-date"><time datetime="{{ DateInt64 .CreateTime "YYYY-MM-DD HH:mm"}}" itemprop="datePublished">{{ DateInt64 .CreateTime "YYYY-MM-DD"}}</time></p>
+          </div>
+        </li>
+        {{end}}
+      </ul>
+    </div>
+  </div>
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">tags</h3>
+    <div class="widget">
+      <ul class="tag-list">
+        {{range .Tags}}
+        <li class="tag-list-item">
+          <a class="tag-list-link" href="{{.Url}}">{{.Name}}</a>
+        </li>
+        {{end}}
+      </ul>
+    </div>
+  </div>
+
+</aside>

@@ -1,0 +1,94 @@
+{{ extends "/default.layout" }}
+
+{{ define "body"}}
+<div class="breadcrumb grey lighten-3">
+  <h6>
+    {{.Title}}
+  </h6>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col s12 m12 l8 offset-l2">
+      <div class="card">
+        <div class="card-content">
+          <div class="row">
+
+            <div class="col s12 m4 l4">
+              <img src="{{.User.Avatar}}" alt="{{.User.Name}}" class="circle"/>
+            </div>
+
+            <div class="col s12 m8 l8">
+              <div class="row">
+                <form id="profile" name="profile-form" action="#" method="post">
+                  <div class="input-field col s12">
+                    <input id="name" name="name" type="text" class="validate" value="{{.User.Name}}">
+                    <label for="name">Name</label>
+                  </div>
+
+                  <div class="input-field col s12">
+                    <input id="slug" name="slug" type="text" class="validate" value="{{.User.Slug}}">
+                    <label for="slug">Slug</label>
+                  </div>
+
+                  <div class="input-field col s12">
+                    <input id="email" name="email" type="email" class="validate" value="{{.User.Email}}">
+                    <label for="email">Email Address</label>
+                  </div>
+
+                  <div class="input-field col s12">
+                    <input id="url" name="url" type="url" class="validate" value="{{.User.Website}}">
+                    <label for="url">Personal Website</label>
+                  </div>
+
+                  <div class="input-field col s12">
+                    <textarea id="bio" name="bio" class="materialize-textarea">{{.User.Bio}}</textarea>
+                    <label for="bio">Bio</label>
+                  </div>
+
+                  <div class="col s6">
+                    <button class="waves-effect waves-light blue btn">Save</button>
+                  </div>
+                  <div class="col s6">
+                    <a href="/admin/password/" class="waves-effect waves-light btn right orange">Change Password</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}
+
+{{ define "after_footer" }}
+<script src="/static/lib/validate.min.js"></script>
+<script>
+    $(function(){
+        new FormValidator("profile-form",[
+            {"name":"slug","rules":"alpha_numeric|min_length[1]|max_length[20]"},
+            {"name":"email","rules":"valid_email"},
+            {"name":"url","rules":"valid_url"}
+        ],function(errors,e) {
+            e.preventDefault();
+            $('.invalid').hide();
+            if(errors.length){
+                $("#"+errors[0].id+"-invalid").removeClass("hide").show();
+                return;
+            }
+            $('#profile').ajaxSubmit(function(json){
+                if(!json.res){
+                    alert(json.msg);
+                }else{
+                    Materialize.toast("Profile saved", 4000, "green")
+                }
+                return false;
+            });
+        })
+    });
+</script>
+
+{{ end }}

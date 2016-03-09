@@ -1,0 +1,56 @@
+{{ extends "/home.layout" }}
+
+{{ define "content"}}
+<section id="main">
+  <div class="archive-tag-wrap">
+    <span class="archive-tag">Tag: #{{ .Tag }}</span>
+  </div>
+  {{range .Articles}}
+  <article class="article article-type-post" itemscope="" itemprop="blogPost">
+    <div class="article-inner">
+
+      <header class="article-header">
+        <a href="{{ .Link }}">
+          <h1 class="article-title" itemprop="name">
+            {{ .Title }}
+          </h1>
+        </a>
+        <div class="article-meta">
+          <div class="article-date">
+            <i class="fa fa-calendar"></i>
+            <time datetime="{{ .CreateTime }}" itemprop="datePublished">{{DateFormat .CreateTime "%m %b, %Y"}}</time>
+          </div>
+
+          <div class="article-category">
+            <i class="fa fa-tags"></i>
+            {{ range .GetTags }}
+            <a class="article-category-link" href="{{ .Link}}">{{.Name}}</a>
+            {{ end }}
+          </div>
+        </div>
+      </header>
+
+      <div class="article-entry" itemprop="articleBody">
+        <p class="markdown">
+        {{Html .Summary}}
+        </p>
+        <p class="article-more-link">
+        <a href="{{ .Link }}">Read More</a>
+        </p>
+      </div>
+      <footer class="article-footer">
+
+          <a href="{{.Link}}#comments" class="article-comment-link"><i class="fa fa-comment"></i> {{.CommentNum}} Comments</a>
+          <a class="article-views"><i class="fa fa-eye"></i> {{.Hits}}</a>
+      </footer>
+    </div>
+  </article>
+  {{ end }}
+
+  <div class="pager text-center" id="article-pager">
+    {{if .Pager.IsNext}}<a href="/p/{{.Pager.Next}}/" class="item left">Older Posts</a>{{end}}
+    {{if .Pager.IsPrev}}<a href="/p/{{.Pager.Prev}}/" class="item right">Newer Posts</a>{{end}}
+  </div>
+
+</section>
+{{ end }}

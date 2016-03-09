@@ -1,0 +1,148 @@
+{{ extends "/default.layout" }}
+
+{{ define "body"}}
+<div class="breadcrumb grey lighten-3">
+  <h6>
+    {{.Title}}
+  </h6>
+</div>
+
+<div class="content">
+  <div class="row">
+    <div class="col s12 m12 l12">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-title"><span class="card-title">Comments</span></div>
+
+          <ul class="list-group list-group-fit">
+            {{range .Comments}}
+
+            <li id="comment-{{.Id}}" class="list-group-item">
+              <div class="row valign-wrapper">
+                <div class="col s1">
+                  <img src="{{.Avatar}}" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
+                </div>
+
+                <div class="col s11">
+                  <div class="media-right media-middle right ">
+                    <div style="width:100px" class="text-muted center">
+                      <small>{{DateFormat .CreatedAt "%Y-%m-%d %H:%M"}}</small>
+                    </div>
+                  </div>
+                  <p class="black-text">{{.Author}}<span>&lt;{{.Email}}&gt;</span> said:</p>
+                  <section class="c-content">{{Html .Content}}</section>
+                  {{if .ParentContent}}
+                    <div class="c-p-md markdown">{{Html .ParentContent}}</div>
+                  {{end}}
+
+                {{ if .Approved }}
+                  <a class="btn btn-small green disabled" href="#" rel="{{.Id}}" title="Approve">Approved</a>
+                {{ else }}
+                  <a class="btn btn-small green c-approve" href="#" rel="{{.Id}}" title="Approve">Approve</a>
+                {{ end }}
+                <a class="btn btn-small blue c-reply" href="#" rel="{{.Id}}" title="Reply">Reply</a>
+                <a class="btn btn-small red c-del" href="#" rel="{{.Id}}" title="Delete">Delete</a>
+
+                </div>
+              </div>
+            </li>
+            {{end}}
+          </ul>
+
+          <div id="comment-block" class="row" style="display: none;">
+            <div class="col s12">
+
+              <form id="comment-form" action="/admin/comments/" method="POST" class="col s12">
+                <div class="row">
+                  <div class="input-field col s12">
+                    <textarea id="textarea" name="content" id="comment-content" class="materialize-textarea" required="required"></textarea>
+                    <label for="textarea">Reply</label>
+                  </div>
+                  <div class="input-field col s12">
+                    <button class="btn waves-effect waves-light blue">Submit</button>
+                    <a id="comment-close" class="btn waves-effect waves-light">Cancel</a>
+                  </div>
+                <input type="hidden" value="0" id="comment-parent" name="pid"/>
+                </div>
+              </form>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="center">
+    <ul class="pagination">
+      {{range .Pager.PageSlice}}
+      <li class="waves-effect blue {{if eq $.Pager.Current .}}active{{end}}"><a href="/admin/comments/?page={{.}}">{{.}}</a></li>
+      {{end}}
+    </ul>
+
+  </div>
+</div>
+
+{{end}}
+
+{{ define "after_footer"}}
+<script>
+    $(function () {
+        $('.c-del').on("click", function () {
+            if (confirm("This comment will be permanently deleted.")) {
+                var id = $(this).attr("rel");
+                $.ajax({
+                    type: "delete",
+                    url: "/admin/comments/?id=" + id,
+                    success: function (json) {
+                        if (json.res) {
+                            $('#comment-' + id).remove();
+                            Materialize.toast("Comment delted", 2500, "green");
+                        } else {
+                            Materialize.toast("Can not delete: " + json.res, 2500, "red");
+                        }
+                    }
+                });
+            }
+            return false;
+        });
+        $('.c-approve').on("click", function () {
+            var id = $(this).attr("rel");
+            $.ajax({
+                type: "put",
+                url: "/admin/comments/?id=" + id,
+                success: function (json) {
+                    if (json.res) {
+                        $('#comment-' + id).find(".c-check").remove();
+                    } else {
+                        alert("Unkown Error.");
+                    }
+                }
+            });
+            return false;
+        });
+        $('.c-reply').on("click",function(){
+            var id = $(this).attr("rel");
+            $('#comment-'+id).append($('#comment-block').detach().show());
+            $('#comment-parent').val(id);
+           return false;
+        });
+        $('#comment-form').ajaxForm(function(json){
+            if (json.res) {
+              Materialize.toast("Succesfully replied", 1000, "green", function() {
+                window.location.href = "/admin/comments/";
+              });
+            } else {
+                Materialize.toast("Can not reply: " + json.msg, 2500, "red");
+            }
+        });
+        $('#comment-close').on("click",function(){
+            $('#comment-block').hide();
+            $('#comment-parent').val(0);
+            $('#comment-content').val("");
+        });
+    });
+</script>
+{{ end }}

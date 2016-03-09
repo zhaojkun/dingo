@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <title>{{ .Title }} - Dingo </title>
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,700italic,700,500italic,500,400italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href="/static/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="/static/css/admin.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <nav class="blue">
+          <div class="nav-wrapper">
+            <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only">
+              <i class="mdi-navigation-menu"></i>
+            </a>
+            <ul class="right hide-on-med-and-down">
+              <li>
+                <a href="/admin/setting/">
+                  <i class="material-icons">settings</i>
+                </a>
+              </li>
+              <li>
+                <a href="/logout/" class="tooltipped" data-position="left" data-delay="50" data-tooltip="Logout">
+                  <i class="material-icons">exit_to_app</i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <ul id="nav-mobile" class="side-nav custom-side-nav fixed">
+          <li class="blue darken-2">
+            <div class="user">
+              <div class="chip blue darken-3 white-text">
+                <img src="{{.User.Avatar}}" alt="Contact Person">
+                {{.User.Name}}
+              </div>
+            </div>
+          </li>
+          <li>
+            <a href="/admin/" class="waves-effect waves-blue {{if eq .Title "Dashboard"}}blue white-text light-1{{end}}">
+              <i class="material-icons white-text">dashboard</i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/posts/" class="waves-effect waves-blue {{if eq .Title "Posts"}}blue white-text light-1{{end}}">
+              <i class="material-icons">library_books</i>
+              Posts
+            </a>
+          </li>
+          <li>
+            <a href="/admin/pages/" class="waves-effect waves-blue {{if eq .Title "Pages"}}blue white-text light-1{{end}}">
+              <i class="material-icons">description</i>
+              <span>Pages</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/comments/" class="waves-effect waves-blue {{if eq .Title "Comments"}}blue white-text light-1{{end}}">
+              <i class="material-icons">message</i>
+              <span>Comments</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/profile/" class="waves-effect waves-blue {{if eq .Title "Profile"}}blue white-text light-1{{end}}">
+              <i class="material-icons">perm_identity</i>
+              Profile
+            </a>
+          </li>
+          <li>
+            <a href="/admin/files/" class="waves-effect waves-blue {{if eq .Title "Files"}}blue white-text light-1{{end}}">
+              <i class="material-icons">perm_media</i>
+              Files
+            </a>
+          </li>
+          <li>
+            <a href="/admin/monitor/" class="waves-effect waves-blue {{if eq .Title "Monitor"}}blue white-text light-1{{end}}">
+              <i class="material-icons">assessment</i>
+              Monitor
+            </a>
+          </li>
+        </ul>
+      </header>
+      <main>
+      {{ template "body" }}
+      </main>
+    </div>
+    <footer class="page-footer">
+      <div class="footer-copyright blue">
+        <div class="container">
+          © 2016 Dingo
+          <span class="grey-text text-lighten-4 right" href="#!">Powered by Dingo</span>
+        </div>
+      </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/lib/jquery.form.min.js"></script>
+    <script type="text/javascript" src="/static/js/materialize.min.js"></script>
+    <script type="text/javascript"></script>
+    {{ template "after_footer"  }}
+  </body>
+</html>
