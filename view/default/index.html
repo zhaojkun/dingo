@@ -63,8 +63,8 @@
 
           <div class="article-category">
             <i class="fa fa-tags"></i>
-            {{ range .Tags }}
-            <a class="article-category-link" href="{{ .Url }}">{{.Name}}</a>
+            {{ range $tag := .Tags }}
+            <a class="article-category-link" href="{{ $tag.Url }}">{{.Name}}</a>
             {{ end }}
           </div>
         </div>
@@ -72,7 +72,7 @@
 
       <div class="article-entry" itemprop="articleBody">
         <p class="markdown">
-        {{Html .Summary}}
+        {{Html .Html}}
         </p>
         <p class="article-more-link">
         <a href="{{ .Url }}">Read More</a>
@@ -92,41 +92,4 @@
     {{if .Pager.IsPrev}}<a href="/p/{{.Pager.Prev}}/" class="item right">Newer Posts</a>{{end}}
   </div>
 </section>
-{{ end }}
-
-{{ define "sidebar"}}
-<aside id="sidebar">
-
-  <div class="widget-wrap">
-    <h3 class="widget-title">recents</h3>
-    <div class="widget">
-      <ul id="recent-post" class="">
-        {{range .RecentArticles}}
-        <li>
-          <div class="item-inner">
-            <p class="item-category"><a class="article-category-link" href="">LifeStyle</a></p>
-            <p class="item-title"><a href="{{.Url}}" class="title">{{.Title}}</a></p>
-            <p class="item-date"><time datetime="{{ DateInt64 .CreateTime "YYYY-MM-DD HH:mm"}}" itemprop="datePublished">{{ DateInt64 .CreateTime "YYYY-MM-DD"}}</time></p>
-          </div>
-        </li>
-        {{end}}
-      </ul>
-    </div>
-  </div>
-
-  <div class="widget-wrap">
-    <h3 class="widget-title">tags</h3>
-    <div class="widget">
-      <ul class="tag-list">
-        {{range .Tags}}
-        <li class="tag-list-item">
-          <a class="tag-list-link" href="{{ .Slug }}">{{.Name}}</a>
-          <span class="tag-list-count">2</span>
-        </li>
-        {{end}}
-      </ul>
-    </div>
-  </div>
-
-</aside>
 {{ end }}

@@ -2,11 +2,11 @@
 <html lang="{{ with .Site.LanguageCode }}{{ . }}{{ else }}en-US{{ end }}">
   <head>
     <meta charset="utf-8">
-    <title>{{if .Title}}{{.Title}} - {{end}}{{Setting "site_title"}}</title>
+    <title>{{if .Title}}{{.Title}} - {{end}}{{Setting "title"}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta name="keywords" content="{{Setting `site_keywords`}}"/>
     <meta name="description" content="{{Setting `site_description`}}"/>
-    <link rel="alternate" type="application/rss+xml" title="{{Setting `site_title`}} - RSS 2.0" href="/feed/"/>
+    <link rel="alternate" type="application/rss+xml" title="{{Setting `title`}} - RSS 2.0" href="/feed/"/>
     <link rel="icon" href="{{ .Site.BaseURL }}favicon.ico">
     <link rel="apple-touch-icon" href="{{ .Site.BaseURL }}apple-touch-icon.png" />
     <link rel="stylesheet" href="/css/style.css"/>
@@ -24,7 +24,7 @@
           <div id="header-main" class="header-inner">
             <div class="title-area">
               <h1 class="site-title" itemprop="headline">
-                <a href="/">{{Setting `site_title`}}</a>
+                <a href="/">{{Setting `title`}}</a>
               </h1>
               <h2 class="site-description" itemprop="description">{{Setting "site_sub_title"}}</h2>
             </div>

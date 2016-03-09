@@ -15,14 +15,6 @@ import (
 //	return size
 //}
 
-func getAllTags() []*model.Tag {
-	tags, err := model.GetAllTags()
-	if err != nil {
-		log.Printf("[Error] Can not get tags: %v", err.Error())
-	}
-	return tags
-}
-
 //func updateSidebarData(data map[string]interface{}) {
 //	popNumStr, err := model.GetSettingValue("popular_size")
 //	if err != nil {
@@ -57,12 +49,17 @@ func getAllTags() []*model.Tag {
 func HomeHandler(ctx *Golf.Context) {
 	p, _ := ctx.Param("page")
 	page, _ := strconv.Atoi(p)
-	articles, pager, _ := model.GetPostList(int64(page), 5, false, true, "published_at")
+	articles, pager, err := model.GetPostList(int64(page), 5, false, true, "published_at")
+	if err != nil {
+		panic(err)
+	}
 	// theme := model.GetSetting("site_theme")
+	ctx.App.View.FuncMap["Tags"] = getAllTags
+	ctx.App.View.FuncMap["RecentArticles"] = getRecentPosts
 	data := map[string]interface{}{
+		"Title": "Home",
 		"Articles": articles,
 		"Pager":    pager,
-		"Tags":     getAllTags(),
 	}
 	//	updateSidebarData(data)
 	ctx.Loader("theme").Render("index.html", data)

@@ -282,14 +282,14 @@ func GetNumberOfPosts(isPage bool, published bool) (int64, error) {
 	return count, nil
 }
 
-func GetPostList(page, size int64, isPage bool, published bool, orderBy string) ([]*Post, *utils.Pager, error) {
+func GetPostList(page, size int64, isPage bool, onlyPublished bool, orderBy string) ([]*Post, *utils.Pager, error) {
 	var (
 		pager *utils.Pager
 	)
-	count, err := GetNumberOfPosts(isPage, published)
+	count, err := GetNumberOfPosts(isPage, onlyPublished)
 	pager = utils.NewPager(page, size, count)
 	selector := postSelector.Copy()
-	if published {
+	if onlyPublished {
 		selector.Where(`status = "published"`)
 	}
 	if isPage {
@@ -310,6 +310,31 @@ func GetPostList(page, size int64, isPage bool, published bool, orderBy string) 
 		return nil, nil, err
 	}
 	return posts, pager, nil
+}
+
+func GetAllPostList(isPage bool, onlyPublished bool, orderBy string) ([]*Post, error) {
+	selector := postSelector.Copy()
+	if onlyPublished {
+		selector.Where(`status = "published"`)
+	}
+	if isPage {
+		selector.Where(`page = 1`)
+	} else {
+		selector.Where(`page = 0`)
+	}
+	selector.OrderBy(orderBy)
+	// Get posts
+	rows, err := db.Query(selector.SQL())
+	defer rows.Close()
+	if err != nil {
+		log.Printf("[Error]: ", err.Error())
+		return nil, err
+	}
+	posts, err := extractPosts(rows)
+	if err != nil {
+		return nil, err
+	}
+	return posts, nil
 }
 
 func scanPost(rows Row, post *Post) error {

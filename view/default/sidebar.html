@@ -4,16 +4,16 @@
     <h3 class="widget-title">recents</h3>
     <div class="widget">
       <ul id="recent-post" class="">
-        {{range .RecentArticles}}
+        {{range RecentArticles}}
         <li>
           <div class="item-inner">
             <p class="item-category">
-              {{ range .GetTags }}
+              {{ range .Tags }}
               <a class="article-category-link" href="{{ .Url }}">{{.Name}}</a>
               {{ end }}
             </p>
-            <p class="item-title"><a href="{{.Link}}" class="title">{{.Title}}</a></p>
-            <p class="item-date"><time datetime="{{ DateInt64 .CreateTime "YYYY-MM-DD HH:mm"}}" itemprop="datePublished">{{ DateInt64 .CreateTime "YYYY-MM-DD"}}</time></p>
+            <p class="item-title"><a href="{{.Url}}" class="title">{{.Title}}</a></p>
+            <p class="item-date"><time datetime="{{ DateFormat .PublishedAt "%Y-%m-%d %H:%M"}}" itemprop="datePublished">{{ DateFormat .PublishedAt "%Y-%m-%d %H:%M"}}</time></p>
           </div>
         </li>
         {{end}}
@@ -25,7 +25,7 @@
     <h3 class="widget-title">tags</h3>
     <div class="widget">
       <ul class="tag-list">
-        {{range .Tags}}
+        {{range Tags}}
         <li class="tag-list-item">
           <a class="tag-list-link" href="{{.Url}}">{{.Name}}</a>
         </li>
