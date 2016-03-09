@@ -406,7 +406,7 @@ func PostChangeSlug(slug string) bool {
 func generateNewSlug(slug string, suffix int) string {
 	newSlug := slug + "-" + strconv.Itoa(suffix)
 	if !PostChangeSlug(newSlug) {
-		return generateNewSlug(newSlug, suffix+1)
+		return generateNewSlug(slug, suffix+1)
 	}
 	return newSlug
 }
