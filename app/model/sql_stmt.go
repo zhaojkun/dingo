@@ -20,11 +20,11 @@ posts (
   meta_title varchar(150),
   meta_description varchar(200),
   author_id integer NOT NULL,
-  created_at integer NOT NULL,
+  created_at datetime NOT NULL,
   created_by integer NOT NULL,
-  updated_at integer,
+  updated_at datetime,
   updated_by integer,
-  published_at integer,
+  published_at datetime,
   published_by integer
 );
 
@@ -81,9 +81,9 @@ CREATE TABLE IF NOT EXISTS
 		parent_id			integer,
 		meta_title			varchar(150),
 		meta_description	varchar(200),
-		created_at			integer NOT NULL,
+		created_at			datetime NOT NULL,
 		created_by			integer NOT NULL,
-		updated_at			integer,
+		updated_at			datetime,
 		updated_by			integer
 	);
 
