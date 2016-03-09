@@ -92,7 +92,8 @@ func PostSaveHandler(ctx *Golf.Context) {
 	}
 	ctx.JSON(map[string]interface{}{
 		"res":     true,
-		"content": p})
+		"content": p,
+	})
 }
 
 func AdminPostHandler(ctx *Golf.Context) {
@@ -192,12 +193,14 @@ func PageSaveHandler(ctx *Golf.Context) {
 	if e != nil {
 		ctx.JSON(map[string]interface{}{
 			"res": false,
-			"msg": e.Error()})
+			"msg": e.Error(),
+		})
 		return
 	}
 	ctx.JSON(map[string]interface{}{
 		"res":     true,
-		"content": p})
+		"content": p,
+	})
 }
 
 func CommentViewHandler(ctx *Golf.Context) {
