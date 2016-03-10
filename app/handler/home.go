@@ -46,18 +46,21 @@ import (
 //	data["Tags"], _ = model.GetAllTags()
 //}
 
+func RegisterFunctions(app *Golf.Application) {
+	app.View.FuncMap["Tags"] = getAllTags
+	app.View.FuncMap["RecentArticles"] = getRecentPosts
+}
+
 func HomeHandler(ctx *Golf.Context) {
 	p, _ := ctx.Param("page")
 	page, _ := strconv.Atoi(p)
-	articles, pager, err := model.GetPostList(int64(page), 5, false, true, "published_at")
+	articles, pager, err := model.GetPostList(int64(page), 5, false, true, "published_at DESC")
 	if err != nil {
 		panic(err)
 	}
 	// theme := model.GetSetting("site_theme")
-	ctx.App.View.FuncMap["Tags"] = getAllTags
-	ctx.App.View.FuncMap["RecentArticles"] = getRecentPosts
 	data := map[string]interface{}{
-		"Title": "Home",
+		"Title":    "Home",
 		"Articles": articles,
 		"Pager":    pager,
 	}
@@ -68,8 +71,8 @@ func HomeHandler(ctx *Golf.Context) {
 func ContentHandler(ctx *Golf.Context) {
 	slug, _ := ctx.Param("slug")
 	article, err := model.GetPostBySlug(slug)
-	log.Printf("Error: %v", err)
 	if err != nil {
+		log.Printf("Error: %v", err)
 		ctx.Abort(404)
 		return
 	}
@@ -80,7 +83,6 @@ func ContentHandler(ctx *Golf.Context) {
 		"Content":  article,
 		"Comments": article.Comments,
 	}
-	//		updateSidebarData(data)
 	if article.IsPage {
 		ctx.Loader("theme").Render("page.html", data)
 	} else {

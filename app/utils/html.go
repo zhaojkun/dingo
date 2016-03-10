@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Html2str(html string) string {
+func Html2Str(html string) string {
 	src := string(html)
 
 	// Lowercase HTML tags
@@ -31,6 +31,26 @@ func Html2str(html string) string {
 	src = re.ReplaceAllString(src, "\n")
 
 	return strings.TrimSpace(src)
+}
+
+func SubString(str string, begin, length int) (substr string) {
+	rs := []rune(str)
+	lth := len(rs)
+	if begin < 0 {
+		begin = 0
+	}
+	if begin >= lth {
+		begin = lth
+	}
+	end := begin + length
+	if end > lth {
+		end = lth
+	}
+	return string(rs[begin:end])
+}
+
+func Html2Excerpt(html string, length int) string {
+	return SubString(Html2Str(html), 0, length)
 }
 
 func Markdown2Html(text string) string {

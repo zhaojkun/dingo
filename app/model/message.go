@@ -1,8 +1,8 @@
 package model
 
 import (
-	"log"
 	"github.com/dinever/dingo/app/utils"
+	"log"
 	"strings"
 	"time"
 )
@@ -103,14 +103,14 @@ func generateCommentMessage(co interface{}) string {
 	var s string
 	if c.Parent < 1 {
 		s = "<p>" + c.Author + " commented on post <i>" + string(post.Title) + "</i>: </p><p>"
-		s += utils.Html2str(c.Content) + "</p>"
+		s += utils.Html2Str(c.Content) + "</p>"
 	} else {
 		p, err := GetCommentById(c.Parent)
 		if err != nil {
 			s = "<p>" + c.Author + " commented on post <i>" + string(post.Title) + "</i>: </p><p>"
 		} else {
 			s = "<p>" + c.Author + " replied " + p.Author + "'s comment on <i>" + string(post.Title) + "</i>: </p><p>"
-			s += utils.Html2str(c.Content) + "</p>"
+			s += utils.Html2Str(c.Content) + "</p>"
 		}
 	}
 	return s

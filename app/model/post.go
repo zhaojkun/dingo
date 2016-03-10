@@ -18,13 +18,13 @@ type Post struct {
 	Markdown        string
 	Html            string
 	Image           string
-	IsComment       bool
 	CommentNum      int64
 	Comments        []*Comment
 	IsFeatured      bool
 	IsPublished     bool
 	status          string
 	IsPage          bool
+	AllowComment    bool
 	Category        string
 	Hits            int64
 	Language        string
@@ -69,6 +69,10 @@ func (p *Post) Url() string {
 func (p *Post) Summary() string {
 	text := strings.Split(p.Markdown, "<!--more-->")[0]
 	return utils.Markdown2Html(text)
+}
+
+func (p *Post) Excerpt() string {
+	return utils.Html2Excerpt(p.Html, 255)
 }
 
 func (p *Post) Save() error {
@@ -127,9 +131,9 @@ func InsertPost(p *Post) (int64, error) {
 	}
 	var result sql.Result
 	if p.IsPublished {
-		result, err = writeDB.Exec(stmtInsertPost, nil, uuid.Formatter(uuid.NewV4(), uuid.CleanHyphen), p.Title, p.Slug, p.Markdown, p.Html, p.IsFeatured, p.IsPage, p.status, p.Image, p.CreatedBy, p.CreatedAt, p.CreatedBy, p.CreatedAt, p.CreatedBy, p.CreatedAt, p.CreatedBy)
+		result, err = writeDB.Exec(stmtInsertPost, nil, uuid.Formatter(uuid.NewV4(), uuid.CleanHyphen), p.Title, p.Slug, p.Markdown, p.Html, p.IsFeatured, p.IsPage, p.AllowComment, p.status, p.Image, p.CreatedBy, p.CreatedAt, p.CreatedBy, p.CreatedAt, p.CreatedBy, p.CreatedAt, p.CreatedBy)
 	} else {
-		result, err = writeDB.Exec(stmtInsertPost, nil, uuid.Formatter(uuid.NewV4(), uuid.CleanHyphen), p.Title, p.Slug, p.Markdown, p.Html, p.IsFeatured, p.IsPage, p.status, p.Image, p.CreatedBy, p.CreatedAt, p.CreatedBy, p.CreatedAt, p.CreatedBy, nil, nil)
+		result, err = writeDB.Exec(stmtInsertPost, nil, uuid.Formatter(uuid.NewV4(), uuid.CleanHyphen), p.Title, p.Slug, p.Markdown, p.Html, p.IsFeatured, p.IsPage, p.AllowComment, p.status, p.Image, p.CreatedBy, p.CreatedAt, p.CreatedBy, p.CreatedAt, p.CreatedBy, nil, nil)
 	}
 	if err != nil {
 		writeDB.Rollback()
@@ -176,9 +180,9 @@ func UpdatePost(p *Post) error {
 	}
 	// If the updated post is published for the first time, add publication date and user
 	if p.IsPublished && !currentPost.IsPublished {
-		_, err = writeDB.Exec(stmtUpdatePostPublished, p.Title, p.Slug, p.Markdown, p.Html, p.IsFeatured, p.IsPage, status, p.Image, p.CreatedAt, p.CreatedBy, p.CreatedAt, p.CreatedBy, p.Id)
+		_, err = writeDB.Exec(stmtUpdatePostPublished, p.Title, p.Slug, p.Markdown, p.Html, p.IsFeatured, p.IsPage, p.AllowComment, status, p.Image, p.CreatedAt, p.CreatedBy, p.CreatedAt, p.CreatedBy, p.Id)
 	} else {
-		_, err = writeDB.Exec(stmtUpdatePost, p.Title, p.Slug, p.Markdown, p.Html, p.IsFeatured, p.IsPage, status, p.Image, p.CreatedAt, p.CreatedBy, p.Id)
+		_, err = writeDB.Exec(stmtUpdatePost, p.Title, p.Slug, p.Markdown, p.Html, p.IsFeatured, p.IsPage, p.AllowComment, status, p.Image, p.CreatedAt, p.CreatedBy, p.Id)
 	}
 	if err != nil {
 		writeDB.Rollback()
@@ -346,7 +350,7 @@ func scanPost(rows Row, post *Post) error {
 		nullPublishedBy sql.NullInt64
 	)
 	err := rows.Scan(&post.Id, &post.UUID, &post.Title, &post.Slug, &post.Markdown,
-		&post.Html, &post.IsFeatured, &post.IsPage, &post.status, &nullImage,
+		&post.Html, &post.IsFeatured, &post.IsPage, &post.AllowComment, &post.CommentNum, &post.status, &nullImage,
 		&post.userId, &post.CreatedAt, &post.CreatedBy, &post.UpdatedAt, &nullUpdatedBy, &post.PublishedAt, &nullPublishedBy)
 	post.Image = nullImage.String
 	return err

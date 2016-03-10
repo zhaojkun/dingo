@@ -82,10 +82,10 @@ func (u *User) CheckPassword(password string) bool {
 
 func scanUser(user *User, row *sql.Row) error {
 	var (
-		nullImage   sql.NullString
-		nullCover   sql.NullString
-		nullBio     sql.NullString
-		nullWebsite sql.NullString
+		nullImage    sql.NullString
+		nullCover    sql.NullString
+		nullBio      sql.NullString
+		nullWebsite  sql.NullString
 		nullLocation sql.NullString
 	)
 	err := row.Scan(&user.Id, &user.Name, &user.Slug, &user.Email, &nullImage, &nullCover, &nullBio, &nullWebsite, &nullLocation)

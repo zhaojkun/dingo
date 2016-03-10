@@ -46,16 +46,17 @@ func Init() {
 	App.View.FuncMap["DateString"] = utils.DateString
 	App.View.FuncMap["DateTime"] = utils.DateTime
 	App.View.FuncMap["Now"] = utils.Now
-	App.View.FuncMap["Html2str"] = utils.Html2str
+	App.View.FuncMap["Html2Str"] = utils.Html2Str
 	App.View.FuncMap["FileSize"] = utils.FileSize
 	App.View.FuncMap["Setting"] = model.GetSettingValue
 	App.View.FuncMap["Navigator"] = model.GetNavigators
 	App.View.FuncMap["Md2html"] = utils.Markdown2HtmlTemplate
+	handler.RegisterFunctions(App)
 	theme := model.GetSettingValue("theme")
 	App.View.SetTemplateLoader("base", "view")
 	App.View.SetTemplateLoader("admin", filepath.Join("view", "admin"))
 	App.View.SetTemplateLoader("theme", filepath.Join("view", theme))
-//	static_dir, _ := App.Config.GetString("app/static_dir", "static")
+	//	static_dir, _ := App.Config.GetString("app/static_dir", "static")
 	App.Static("/upload/", upload_dir)
 	App.Static("/", filepath.Join("view", "admin", "assets"))
 	App.Static("/", filepath.Join("view", theme, "assets"))
@@ -116,7 +117,7 @@ func registerAdminURLHandlers() {
 func registerHomeHandler() {
 	statsChain := Golf.NewChain()
 	App.Get("/", statsChain.Final(handler.HomeHandler))
-	//	App.Get("/p/:page/?", handler.HomeHandler)
+	App.Get("/page/:page/?", handler.HomeHandler)
 	//	App.Post("/comment/:id/", handler.CommentHandler)
 	//	App.Get("/tag/:tag/?", handler.TagHandler)
 	//	App.Get("/tag/:tag/p/:page/?", handler.TagHandler)

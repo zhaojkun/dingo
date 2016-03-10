@@ -75,7 +75,7 @@ func PostSaveHandler(ctx *Golf.Context) {
 	p.Markdown = ctx.Request.FormValue("content")
 	p.Html = utils.Markdown2Html(p.Markdown)
 	p.Tags = model.GenerateTagsFromCommaString(ctx.Request.FormValue("tag"))
-	p.IsComment = ctx.Request.FormValue("comment") == "on"
+	p.AllowComment = ctx.Request.FormValue("comment") == "on"
 	p.Category = ctx.Request.FormValue("category")
 	p.CreatedBy = user.Id
 	p.UpdatedBy = user.Id
@@ -183,7 +183,7 @@ func PageSaveHandler(ctx *Golf.Context) {
 	p.Markdown = ctx.Request.FormValue("content")
 	p.Html = utils.Markdown2Html(p.Markdown)
 	p.Tags = model.GenerateTagsFromCommaString(ctx.Request.FormValue("tag"))
-	p.IsComment = ctx.Request.FormValue("comment") == "on"
+	p.AllowComment = ctx.Request.FormValue("comment") == "on"
 	p.Category = ctx.Request.FormValue("category")
 	p.CreatedBy = user.Id
 	p.IsPublished = ctx.Request.FormValue("status") == "on"
