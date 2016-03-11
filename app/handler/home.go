@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/dinever/dingo/app/model"
+	"github.com/dinever/dingo/app/utils"
 	"github.com/dinever/golf"
 	"log"
 	"strconv"
@@ -72,7 +73,7 @@ func ContentHandler(ctx *Golf.Context) {
 	slug, _ := ctx.Param("slug")
 	article, err := model.GetPostBySlug(slug)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("[Error]: %v", err)
 		ctx.Abort(404)
 		return
 	}
@@ -90,53 +91,67 @@ func ContentHandler(ctx *Golf.Context) {
 	}
 }
 
-//
-//func CommentHandler(ctx *Golf.Context) {
-//	id, _ := ctx.Param("id")
-//	cid, _ := strconv.Atoi(id)
-//	if cid < 1 || model.GetContentById(cid) == nil {
-//		ctx.JSON(map[string]interface{}{
-//			"res": false,
-//		})
-//	}
-//	c := new(model.Comment)
-//	c.Author = ctx.Request.FormValue("user")
-//	c.Email = ctx.Request.FormValue("email")
-//	c.Url = ctx.Request.FormValue("url")
-//	c.Content = ctx.Request.FormValue("content")
-//	c.Avatar = utils.Gravatar(c.Email, "50")
-//	c.Pid, _ = strconv.Atoi(ctx.Request.FormValue("pid"))
-//	c.Ip = ctx.Request.RemoteAddr
-//	c.UserAgent = ctx.Request.UserAgent()
-//	c.IsAdmin = false
-//	msg := validateComment(c)
-//	if msg == "" {
-//		model.CreateComment(cid, c)
-//		ctx.JSON(map[string]interface{}{
-//			"res":     true,
-//			"comment": c.ToJson(),
-//		})
-//		model.CreateMessage("comment", c)
-//	} else {
-//		ctx.JSON(map[string]interface{}{
-//			"res": false,
-//			"msg": msg,
-//		})
-//	}
-//}
-//
-//func validateComment(c *model.Comment) string {
-//	if utils.IsEmptyString(c.Author) || utils.IsEmptyString(c.Content) {
-//		return "Name, Email and Content are required fields."
-//	}
-//	if !utils.IsEmail(c.Email) {
-//		return "Email format not valid."
-//	}
-//	if !utils.IsEmptyString(c.Url) && !utils.IsURL(c.Url) {
-//		return "Website URL format not valid."
-//	}
-//	return ""
-//}
+
+func CommentHandler(ctx *Golf.Context) {
+	id, _ := ctx.Param("id")
+	cid, _ := strconv.Atoi(id)
+	post, err := model.GetPostById(int64(cid))
+	if cid < 1 || err != nil {
+		ctx.JSON(map[string]interface{}{
+			"res": false,
+		})
+	}
+	c := new(model.Comment)
+	c.Author = ctx.Request.FormValue("author")
+	c.Email = ctx.Request.FormValue("email")
+	c.Website = ctx.Request.FormValue("website")
+	c.Content = ctx.Request.FormValue("comment")
+	c.Avatar = utils.Gravatar(c.Email, "50")
+	c.PostId = post.Id
+	pid, _ := strconv.Atoi(ctx.Request.FormValue("pid"))
+	c.Parent = int64(pid)
+	c.Ip = ctx.Request.RemoteAddr
+	c.UserAgent = ctx.Request.UserAgent()
+	c.UserId = 0
+	msg := validateComment(c)
+	if msg == "" {
+		_, err := c.Save()
+		if err != nil {
+			ctx.JSON(map[string]interface{}{
+				"res":     false,
+				"msg": "Can not comment on this post.",
+			})
+		}
+		post.CommentNum++
+		err = post.Save()
+		if err != nil {
+			log.Printf("[Error]: Can not increase comment count for post %v: %v", post.Id, err.Error())
+		}
+		ctx.JSON(map[string]interface{}{
+			"res":     true,
+			"comment": c.ToJson(),
+		})
+		model.CreateMessage("comment", c)
+	} else {
+		ctx.JSON(map[string]interface{}{
+			"res": false,
+			"msg": msg,
+		})
+	}
+}
+
+func validateComment(c *model.Comment) string {
+	if utils.IsEmptyString(c.Author) || utils.IsEmptyString(c.Content) {
+		return "Name, Email and Content are required fields."
+	}
+	if !utils.IsEmail(c.Email) {
+		return "Email format not valid."
+	}
+	if !utils.IsEmptyString(c.Website) && !utils.IsURL(c.Website) {
+		return "Website URL format not valid."
+	}
+	return ""
+}
 //
 //func TagHandler(ctx *Golf.Context) {
 //	p, _ := ctx.Param("page")

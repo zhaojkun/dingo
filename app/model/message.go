@@ -96,7 +96,7 @@ func generateCommentMessage(co interface{}) string {
 	if !ok {
 		return ""
 	}
-	post, err := GetPostById(c.Id)
+	post, err := GetPostById(c.PostId)
 	if err != nil {
 		panic(err)
 	}

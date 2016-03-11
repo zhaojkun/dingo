@@ -182,6 +182,7 @@ var commentSelector = SQL.Select(`id, uuid, post_id, author, author_email, autho
 var stmtGetAllCommentList = commentSelector.Copy().OrderBy(`created_at DESC`).Limit(`?`).Offset(`?`).SQL()
 var stmtGetApprovedCommentList = commentSelector.Copy().Where(`approved = 1`).OrderBy(`created_at DESC`).Limit(`?`).Offset(`?`).SQL()
 var stmtGetCommentById = commentSelector.Copy().Where(`id = ?`).SQL()
+var stmtGetApprovedCommentListByPostId = commentSelector.Copy().Where(`post_id = ?`, `approved = 1`).OrderBy(`created_at DESC`).SQL()
 var stmtInsertComment = `INSERT OR REPLACE INTO comments (id, uuid, post_id, author, author_email, author_url, author_ip, created_at, content, approved, agent, parent, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 var stmtDeleteCommentById = `DELETE FROM comments WHERE id = ?`
 
@@ -205,7 +206,7 @@ const stmtGetTagIdBySlug = `SELECT id FROM tags WHERE slug = ?`
 const stmtGetBlog = `SELECT value FROM settings WHERE key = ?`
 const stmtGetPostCreationDateById = `SELECT created_at FROM posts WHERE id = ?`
 
-const stmtInsertPost = `INSERT INTO posts (id, uuid, title, slug, markdown, html, featured, page, allow_comment, status, image, author_id, created_at, created_by, updated_at, updated_by, published_at, published_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+const stmtInsertPost = `INSERT INTO posts (id, uuid, title, slug, markdown, html, featured, page, allow_comment, status, image, author_id, created_at, created_by, updated_at, updated_by, published_at, published_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 const stmtInsertUser = `INSERT INTO users (id, uuid, name, slug, password, email, image, cover, created_at, created_by, updated_at, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 const stmtInsertRoleUser = `INSERT INTO roles_users (id, role_id, user_id) VALUES (?, ?, ?)`
 const stmtInsertTag = `INSERT INTO tags (id, uuid, name, slug, created_at, created_by, updated_at, updated_by, hidden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
@@ -213,7 +214,7 @@ const stmtInsertPostTag = `INSERT INTO posts_tags (id, post_id, tag_id) VALUES (
 const stmtInsertSetting = `INSERT INTO settings (id, uuid, key, value, type, created_at, created_by, updated_at, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 const stmtUpdatePost = `UPDATE posts SET title = ?, slug = ?, markdown = ?, html = ?, featured = ?, page = ?, allow_comment = ?, status = ?, image = ?, updated_at = ?, updated_by = ? WHERE id = ?`
-const stmtUpdatePostPublished = `UPDATE posts SET title = ?, slug = ?, markdown = ?, html = ?, featured = ?, page = ?, status = ?, image = ?, updated_at = ?, updated_by = ?, published_at = ?, published_by = ? WHERE id = ?`
+const stmtUpdatePostPublished = `UPDATE posts SET title = ?, slug = ?, markdown = ?, html = ?, featured = ?, page = ?, allow_comment = ?, status = ?, image = ?, updated_at = ?, updated_by = ?, published_at = ?, published_by = ? WHERE id = ?`
 const stmtUpdateSettings = `UPDATE settings SET value = ?, updated_at = ?, updated_by = ? WHERE key = ?`
 const stmtUpdateUser = `UPDATE users SET name = ?, slug = ?, email = ?, image = ?, cover = ?, bio = ?, website = ?, location = ?, updated_at = ?, updated_by = ? WHERE id = ?`
 const stmtUpdateLastLogin = `UPDATE users SET last_login = ? WHERE id = ?`

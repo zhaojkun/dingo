@@ -118,7 +118,7 @@ func registerHomeHandler() {
 	statsChain := Golf.NewChain()
 	App.Get("/", statsChain.Final(handler.HomeHandler))
 	App.Get("/page/:page/?", handler.HomeHandler)
-	//	App.Post("/comment/:id/", handler.CommentHandler)
+	App.Post("/comment/:id/", handler.CommentHandler)
 	//	App.Get("/tag/:tag/?", handler.TagHandler)
 	//	App.Get("/tag/:tag/p/:page/?", handler.TagHandler)
 	//	App.Get("/feed/?", handler.RssHandler)

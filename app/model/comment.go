@@ -13,7 +13,7 @@ type Comment struct {
 	UUID      string
 	Author    string
 	Email     string
-	Url       string
+	Website   string
 	Avatar    string
 	CreatedAt *time.Time
 	Content   string
@@ -27,6 +27,8 @@ type Comment struct {
 }
 
 func (comment *Comment) Save() (int64, error) {
+	createdAt := time.Now()
+	comment.CreatedAt = &createdAt
 	writeDB, err := db.Begin()
 	if err != nil {
 		writeDB.Rollback()
@@ -34,9 +36,9 @@ func (comment *Comment) Save() (int64, error) {
 	}
 	var result sql.Result
 	if comment.Id > 0 {
-		result, err = writeDB.Exec(stmtInsertComment, comment.Id, uuid.Formatter(uuid.NewV4(), uuid.CleanHyphen), comment.PostId, comment.Author, comment.Email, comment.Url, comment.Ip, comment.CreatedAt, comment.Content, comment.Approved, comment.UserAgent, comment.Parent, comment.UserId)
+		result, err = writeDB.Exec(stmtInsertComment, comment.Id, uuid.Formatter(uuid.NewV4(), uuid.CleanHyphen), comment.PostId, comment.Author, comment.Email, comment.Website, comment.Ip, comment.CreatedAt, comment.Content, comment.Approved, comment.UserAgent, comment.Parent, comment.UserId)
 	} else {
-		result, err = writeDB.Exec(stmtInsertComment, nil, uuid.Formatter(uuid.NewV4(), uuid.CleanHyphen), comment.PostId, comment.Author, comment.Email, comment.Url, comment.Ip, comment.CreatedAt, comment.Content, comment.Approved, comment.UserAgent, comment.Parent, comment.UserId)
+		result, err = writeDB.Exec(stmtInsertComment, nil, uuid.Formatter(uuid.NewV4(), uuid.CleanHyphen), comment.PostId, comment.Author, comment.Email, comment.Website, comment.Ip, comment.CreatedAt, comment.Content, comment.Approved, comment.UserAgent, comment.Parent, comment.UserId)
 	}
 	if err != nil {
 		writeDB.Rollback()
@@ -47,6 +49,7 @@ func (comment *Comment) Save() (int64, error) {
 		writeDB.Rollback()
 		return 0, err
 	}
+	comment.Id = commentId
 	return commentId, writeDB.Commit()
 }
 
@@ -55,7 +58,7 @@ func (c *Comment) ToJson() map[string]interface{} {
 	m["id"] = c.Id
 	m["author"] = c.Author
 	m["email"] = c.Email
-	m["url"] = c.Url
+	m["website"] = c.Website
 	m["avatar"] = c.Avatar
 	m["content"] = c.Content
 	m["create_time"] = c.CreatedAt.Unix()
@@ -127,7 +130,7 @@ func scanComment(rows Row, comment *Comment) error {
 		nullParent sql.NullInt64
 		nullUserId sql.NullInt64
 	)
-	err := rows.Scan(&comment.Id, &comment.UUID, &comment.PostId, &comment.Author, &comment.Email, &comment.Url, &comment.CreatedAt, &comment.Content, &comment.Approved, &comment.UserAgent, &nullParent, &nullUserId)
+	err := rows.Scan(&comment.Id, &comment.UUID, &comment.PostId, &comment.Author, &comment.Email, &comment.Website, &comment.CreatedAt, &comment.Content, &comment.Approved, &comment.UserAgent, &nullParent, &nullUserId)
 	comment.Avatar = utils.Gravatar(comment.Email, "50")
 	comment.Parent = nullParent.Int64
 	comment.UserId = nullUserId.Int64
@@ -142,6 +145,15 @@ func GetCommentById(id int64) (*Comment, error) {
 		return nil, err
 	}
 	return comment, nil
+}
+
+func GetCommentByPostId(id int64) ([]*Comment, error) {
+	rows, err := db.Query(stmtGetApprovedCommentListByPostId, id)
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	return extractComments(rows)
 }
 
 func DeleteComment(id int64) error {

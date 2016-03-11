@@ -387,6 +387,10 @@ func extractPosts(rows *sql.Rows) ([]*Post, error) {
 		if err != nil {
 			return nil, err
 		}
+		post.Comments, err = GetCommentByPostId(post.Id)
+		if err != nil {
+			return nil, err
+		}
 		posts = append(posts, post)
 	}
 	return posts, nil
@@ -418,6 +422,11 @@ func extractPost(row *sql.Row) (*Post, error) {
 	}
 	// Get tags
 	post.Tags, err = GetTags(post.Id)
+	if err != nil {
+		return nil, err
+	}
+	// Get comments
+	post.Comments, err = GetCommentByPostId(post.Id)
 	if err != nil {
 		return nil, err
 	}

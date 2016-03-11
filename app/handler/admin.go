@@ -230,7 +230,7 @@ func CommentAddHandler(ctx *Golf.Context) {
 	comment := new(model.Comment)
 	comment.Author = user.Name
 	comment.Email = user.Email
-	comment.Url = user.Website
+	comment.Website = user.Website
 	comment.Content = ctx.Request.FormValue("content")
 	comment.Avatar = utils.Gravatar(comment.Email, "50")
 	comment.Parent = parent.Id
