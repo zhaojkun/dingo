@@ -48,7 +48,7 @@
                   </div>
                 </div>
                 <div class="input-field col s3">
-                  <input type="checkbox" id="comment" name="comment" {{ if .Post.IsComment }}checked{{ end }}/>
+                  <input type="checkbox" id="comment" name="comment" {{ if .Post.AllowComment }}checked{{ end }}/>
                   <label for="comment">Allow Comment</label>
                 </div>
                 <div class="input-field col s3">
