@@ -250,6 +250,31 @@ func GetPostBySlug(slug string) (*Post, error) {
 	return extractPost(row)
 }
 
+func GetPostsByTag(tagId, page, size int64, onlyPublished bool, orderBy string) ([]*Post, *utils.Pager, error) {
+	var (
+		pager *utils.Pager
+		count int64
+	)
+	row := db.QueryRow(stmtGetPostsCountByTag, tagId)
+	err := row.Scan(&count)
+	if err != nil {
+		log.Printf("[Error]: ", err.Error())
+		return nil, nil, err
+	}
+	pager = utils.NewPager(page, size, count)
+	rows, err := db.Query(stmtGetPostsByTag, tagId, size, pager.Begin - 1)
+	defer rows.Close()
+	if err != nil {
+		log.Printf("[Error]: ", err.Error())
+		return nil, nil, err
+	}
+	posts, err := extractPosts(rows)
+	if err != nil {
+		return nil, nil, err
+	}
+	return posts, pager, nil
+}
+
 func GetAllPostsByTag(tagId int64) ([]*Post, error) {
 	// Get posts
 	rows, err := db.Query(stmtGetAllPostsByTag, tagId)
@@ -287,9 +312,7 @@ func GetNumberOfPosts(isPage bool, published bool) (int64, error) {
 }
 
 func GetPostList(page, size int64, isPage bool, onlyPublished bool, orderBy string) ([]*Post, *utils.Pager, error) {
-	var (
-		pager *utils.Pager
-	)
+	var pager *utils.Pager
 	count, err := GetNumberOfPosts(isPage, onlyPublished)
 	pager = utils.NewPager(page, size, count)
 	selector := postSelector.Copy()

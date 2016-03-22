@@ -5,6 +5,10 @@ import (
 	"github.com/dinever/dingo/app/utils"
 	"github.com/dinever/golf"
 	"log"
+	"strings"
+	"html/template"
+	"time"
+	"net/url"
 	"strconv"
 )
 
@@ -105,7 +109,7 @@ func CommentHandler(ctx *Golf.Context) {
 	c.Author = ctx.Request.FormValue("author")
 	c.Email = ctx.Request.FormValue("email")
 	c.Website = ctx.Request.FormValue("website")
-	c.Content = ctx.Request.FormValue("comment")
+	c.Content = strings.Replace(utils.Html2Str(template.HTMLEscapeString(ctx.Request.FormValue("comment"))), "\n", "<br/>", -1)
 	c.Avatar = utils.Gravatar(c.Email, "50")
 	c.PostId = post.Id
 	pid, _ := strconv.Atoi(ctx.Request.FormValue("pid"))
@@ -113,6 +117,8 @@ func CommentHandler(ctx *Golf.Context) {
 	c.Ip = ctx.Request.RemoteAddr
 	c.UserAgent = ctx.Request.UserAgent()
 	c.UserId = 0
+	createdAt := time.Now()
+	c.CreatedAt = &createdAt
 	msg := validateComment(c)
 	if msg == "" {
 		_, err := c.Save()
@@ -152,28 +158,27 @@ func validateComment(c *model.Comment) string {
 	}
 	return ""
 }
-//
-//func TagHandler(ctx *Golf.Context) {
-//	p, _ := ctx.Param("page")
-//	page, _ := strconv.Atoi(p)
-//	t, _ := ctx.Param("tag")
-//	tag, _ := url.QueryUnescape(t)
-//	size := getArticleListSize()
-//	articles, pager := model.GetTaggedArticleList(tag, page, getArticleListSize())
-//	// fix dotted tag
-//	if len(articles) < 1 && strings.Contains(tag, "-") {
-//		articles, pager = model.GetTaggedArticleList(strings.Replace(tag, "-", ".", -1), page, size)
-//	}
-//	data := map[string]interface{}{
-//		"Articles": articles,
-//		"Pager":    pager,
-//		"Tag":      tag,
-//		"Title":    tag,
-//	}
-//	updateSidebarData(data)
-//	ctx.Loader("theme").Render("tag.html", data)
-//}
-//
+
+func TagHandler(ctx *Golf.Context) {
+	p, _ := ctx.Param("page")
+	page, _ := strconv.Atoi(p)
+	t, _ := ctx.Param("tag")
+	tagSlug, _ := url.QueryUnescape(t)
+	tag, err := model.GetTagBySlug(tagSlug)
+	if err != nil {
+		NotFoundHandler(ctx)
+		return
+	}
+	posts, pager, err := model.GetPostsByTag(tag.Id, int64(page), 5, true, "published_at DESC")
+	data := map[string]interface{}{
+		"Articles": posts,
+		"Pager":    pager,
+		"Tag":      tag,
+		"Title":    tag.Name,
+	}
+	ctx.Loader("theme").Render("tag.html", data)
+}
+
 //func SiteMapHandler(ctx *Golf.Context) {
 //	baseUrl := model.GetSetting("site_url")
 //	println(baseUrl)

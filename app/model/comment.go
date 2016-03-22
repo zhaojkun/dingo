@@ -1,10 +1,10 @@
 package model
 
 import (
-	"database/sql"
-	"github.com/dinever/dingo/app/utils"
-	"github.com/twinj/uuid"
 	"time"
+	"database/sql"
+	"github.com/twinj/uuid"
+	"github.com/dinever/dingo/app/utils"
 )
 
 // Comment struct defines a comment item data.
@@ -27,8 +27,6 @@ type Comment struct {
 }
 
 func (comment *Comment) Save() (int64, error) {
-	createdAt := time.Now()
-	comment.CreatedAt = &createdAt
 	writeDB, err := db.Begin()
 	if err != nil {
 		writeDB.Rollback()

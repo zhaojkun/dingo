@@ -152,7 +152,7 @@ var postCountSelector = SQL.Select(`count(*)`).From(`posts`)
 var stmtGetPublishedPostsCount = postCountSelector.Copy().Where(`status = "published"`).SQL()
 var stmtGetAllPostsCount = postCountSelector.Copy().SQL()
 var stmtGetPostsCountByUser = postCountSelector.Copy().Where(`author_id = ?`).SQL()
-var stmtGetPostsCountByTag = postCountSelector.Copy().Where(`posts_tags.post_id = posts.id`, `posts_tags.tag_id = ?`, `status = 'published'`).SQL()
+var stmtGetPostsCountByTag = postCountSelector.Copy().From(`posts, posts_tags`).Where(`posts_tags.post_id = posts.id`, `posts_tags.tag_id = ?`, `status = 'published'`).SQL()
 
 var postSelector = SQL.Select(`id, uuid, title, slug, markdown, html, featured, page, allow_comment, comment_num, status, image, author_id, created_at, created_by, updated_at, updated_by, published_at, published_by`).From(`posts`)
 var stmtGetPublishedPostList = postSelector.Copy().Where(`status = "published"`).OrderBy(`published_at DESC`).Limit(`?`).Offset(`?`).SQL()
@@ -162,8 +162,8 @@ var stmtGetPostsByUser = postSelector.Copy().Where(`status = 'published'`, `auth
 var stmtGetPostById = postSelector.Copy().Where(`id = ?`).SQL()
 var stmtGetPostBySlug = postSelector.Copy().Where(`slug = ?`).SQL()
 
-var postsTagsSelector = SQL.Select(`posts.id, posts.uuid, posts.title, posts.slug, posts.markdown, posts.html, posts.featured, posts.page, post.allow_comment, post.comment_num, posts.status, posts.image, posts.author_id, posts.created_at, posts.created_by, posts.updated_at, posts.updated_by, posts.published_at, posts.published_by`).From(`posts, posts_tags`)
-var stmtGetPostsByTag = postsTagsSelector.Copy().Where(`status = 'published'`, `posts_tags.post_id = posts_id`, `posts_tags.tag_id = ?`).OrderBy(`published_at DESC`).Limit(`?`).Offset(`?`).SQL()
+var postsTagsSelector = SQL.Select(`posts.id, posts.uuid, posts.title, posts.slug, posts.markdown, posts.html, posts.featured, posts.page, posts.allow_comment, posts.comment_num, posts.status, posts.image, posts.author_id, posts.created_at, posts.created_by, posts.updated_at, posts.updated_by, posts.published_at, posts.published_by`).From(`posts, posts_tags`)
+var stmtGetPostsByTag = postsTagsSelector.Copy().Where(`status = 'published'`, `posts_tags.post_id = posts.id`, `posts_tags.tag_id = ?`).OrderBy(`published_at DESC`).Limit(`?`).Offset(`?`).SQL()
 var stmtGetAllPostsByTag = postsTagsSelector.Copy().Where(`posts_tags.post_id = posts.id`, `posts_tags.tag_id = ?`).OrderBy(`published_at DESC`).SQL()
 
 var pageCountSelector = SQL.Select(`count(*)`).From(`posts`).Where(`page = 1`)
