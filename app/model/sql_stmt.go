@@ -4,147 +4,148 @@ import (
 	"github.com/dinever/dingo/app/model/sql_builder"
 )
 
-const schema = `CREATE TABLE IF NOT EXISTS
+const schema = `
+CREATE TABLE IF NOT EXISTS
 posts (
-  id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-  uuid				varchar(36) NOT NULL,
-  title varchar(150) NOT NULL,
-  slug varchar(150) NOT NULL,
-  markdown text,
-  html text,
-  image text,
-  featured tinyint NOT NULL DEFAULT '0',
-  page tinyint NOT NULL DEFAULT '0',
-  allow_comment tinyint NOT NULL DEFAULT '0',
-  comment_num integer NOT NULL DEFAULT '0',
-  status varchar(150) NOT NULL DEFAULT 'draft',
-  language varchar(6) NOT NULL DEFAULT 'en_US',
-  meta_title varchar(150),
-  meta_description varchar(200),
-  author_id integer NOT NULL,
-  created_at datetime NOT NULL,
-  created_by integer NOT NULL,
-  updated_at datetime,
-  updated_by integer,
-  published_at datetime,
-  published_by integer
+  id                 integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  uuid               varchar(36) NOT NULL,
+  title              varchar(150) NOT NULL,
+  slug               varchar(150) NOT NULL,
+  markdown           text,
+  html               text,
+  image              text,
+  featured           tinyint NOT NULL DEFAULT '0',
+  page               tinyint NOT NULL DEFAULT '0',
+  allow_comment      tinyint NOT NULL DEFAULT '0',
+  comment_num        integer NOT NULL DEFAULT '0',
+  status             varchar(150) NOT NULL DEFAULT 'draft',
+  language           varchar(6) NOT NULL DEFAULT 'en_US',
+  meta_title         varchar(150),
+  meta_description   varchar(200),
+  author_id          integer NOT NULL,
+  created_at         datetime NOT NULL,
+  created_by         integer NOT NULL,
+  updated_at         datetime,
+  updated_by         integer,
+  published_at       datetime,
+  published_by       integer
 );
 
 CREATE TABLE IF NOT EXISTS
-	users (
-		id					integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		uuid				varchar(36) NOT NULL,
-		name				varchar(150) NOT NULL,
-		slug				varchar(150) NOT NULL,
-		password			varchar(60) NOT NULL,
-		email				varchar(254) NOT NULL,
-		image				text,
-		cover				text,
-		bio					varchar(200),
-		website				text,
-		location			text,
-		accessibility		text,
-		status				varchar(150) NOT NULL DEFAULT 'active',
-		language			varchar(6) NOT NULL DEFAULT 'en_US',
-		meta_title			varchar(150),
-		meta_description	varchar(200),
-		last_login			datetime,
-		created_at			datetime NOT NULL,
-		created_by			integer NOT NULL,
-		updated_at			datetime,
-		updated_by			integer
-	);
+users (
+  id               integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  uuid             varchar(36) NOT NULL,
+  name             varchar(150) NOT NULL,
+  slug             varchar(150) NOT NULL,
+  password         varchar(60) NOT NULL,
+  email            varchar(254) NOT NULL,
+  image            text,
+  cover            text,
+  bio              varchar(200),
+  website          text,
+  location         text,
+  accessibility    text,
+  status           varchar(150) NOT NULL DEFAULT 'active',
+  language         varchar(6) NOT NULL DEFAULT 'en_US',
+  meta_title       varchar(150),
+  meta_description varchar(200),
+  last_login       datetime,
+  created_at       datetime NOT NULL,
+  created_by       integer NOT NULL,
+  updated_at       datetime,
+  updated_by       integer
+);
 
 CREATE TABLE IF NOT EXISTS
-	categories (
-		id					integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		uuid				varchar(36) NOT NULL,
-		name				varchar(150) NOT NULL,
-		slug				varchar(150) NOT NULL,
-		description			varchar(200),
-		parent_id			integer,
-		meta_title			varchar(150),
-		meta_description	varchar(200),
-		created_at			datetime NOT NULL,
-		created_by			integer NOT NULL,
-		updated_at			datetime,
-		updated_by			integer
-	);
+categories (
+  id                integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  uuid              varchar(36) NOT NULL,
+  name              varchar(150) NOT NULL,
+  slug              varchar(150) NOT NULL,
+  description       varchar(200),
+  parent_id         integer,
+  meta_title        varchar(150),
+  meta_description  varchar(200),
+  created_at        datetime NOT NULL,
+  created_by        integer NOT NULL,
+  updated_at        datetime,
+  updated_by        integer
+);
 
 CREATE TABLE IF NOT EXISTS
-	tags (
-		id					integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		uuid				varchar(36) NOT NULL,
-		name				varchar(150) NOT NULL,
-		slug				varchar(150) NOT NULL,
-		description			varchar(200),
-    image       text,
-    hidden      boolean NOT NULL DEFAULT 0,
-		parent_id			integer,
-		meta_title			varchar(150),
-		meta_description	varchar(200),
-		created_at			datetime NOT NULL,
-		created_by			integer NOT NULL,
-		updated_at			datetime,
-		updated_by			integer
-	);
-
-	CREATE TABLE IF NOT EXISTS
-	comments (
-		id					integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		uuid				varchar(36) NOT NULL,
-		post_id				varchar(150) NOT NULL,
-		author				varchar(150) NOT NULL,
-		author_email				varchar(150) NOT NULL,
-		author_url varchar(200) NOT NULL,
-		author_ip varchar(100) NOT NULL,
-		created_at datetime NOT NULL,
-		content text NOT NULL,
-		approved tinyint NOT NULL DEFAULT '0',
-		agent varchar(255) NOT NULL,
-		type varchar(20),
-		parent integer,
-		user_id integer
-	);
+tags (
+  id                integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  uuid              varchar(36) NOT NULL,
+  name              varchar(150) NOT NULL,
+  slug              varchar(150) NOT NULL,
+  description       varchar(200),
+  image             text,
+  hidden            boolean NOT NULL DEFAULT 0,
+  parent_id         integer,
+  meta_title        varchar(150),
+  meta_description  varchar(200),
+  created_at        datetime NOT NULL,
+  created_by        integer NOT NULL,
+  updated_at        datetime,
+  updated_by        integer
+);
 
 CREATE TABLE IF NOT EXISTS
-	posts_tags (
-		id		integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		post_id	integer NOT NULL,
-		tag_id	integer NOT NULL
-	);
+comments (
+  id            integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  uuid          varchar(36) NOT NULL,
+  post_id       varchar(150) NOT NULL,
+  author        varchar(150) NOT NULL,
+  author_email  varchar(150) NOT NULL,
+  author_url    varchar(200) NOT NULL,
+  author_ip     varchar(100) NOT NULL,
+  created_at    datetime NOT NULL,
+  content       text NOT NULL,
+  approved      tinyint NOT NULL DEFAULT '0',
+  agent         varchar(255) NOT NULL,
+  type          varchar(20),
+  parent        integer,
+  user_id       integer
+);
 
 CREATE TABLE IF NOT EXISTS
-	posts_categories (
-		id		integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		post_id	integer NOT NULL,
-		category_id	integer NOT NULL
-	);
+posts_tags (
+  id       integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  post_id  integer NOT NULL,
+  tag_id   integer NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS
-	settings (
-		id			integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		uuid		varchar(36) NOT NULL,
-		key			varchar(150) NOT NULL,
-		value		text,
-		type		varchar(150) NOT NULL DEFAULT 'core',
-		created_at	datetime NOT NULL,
-		created_by	integer NOT NULL,
-		updated_at	datetime,
-		updated_by	integer
-	);
+posts_categories (
+  id           integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  post_id      integer NOT NULL,
+  category_id  integer NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS
-	roles (
-		id			integer NOT NULL PRIMARY KEY AUTOINCREMENT,
-		uuid		varchar(36) NOT NULL,
-		name		varchar(150) NOT NULL,
-		description	varchar(200),
-		created_at	datetime NOT NULL,
-		created_by	integer NOT NULL,
-		updated_at	datetime,
-		updated_by	integer
-	);
+settings (
+  id          integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  uuid        varchar(36) NOT NULL,
+  key         varchar(150) NOT NULL,
+  value       text,
+  type        varchar(150) NOT NULL DEFAULT 'core',
+  created_at  datetime NOT NULL,
+  created_by  integer NOT NULL,
+  updated_at  datetime,
+  updated_by  integer
+);
+
+CREATE TABLE IF NOT EXISTS
+roles (
+  id           integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  uuid         varchar(36) NOT NULL,
+  name         varchar(150) NOT NULL,
+  description  varchar(200),
+  created_at   datetime NOT NULL,
+  created_by   integer NOT NULL,
+  updated_at   datetime,
+  updated_by   integer
+);
 `
 
 // Posts
