@@ -1,54 +1,75 @@
-<section id="comments">
-
-  <div id="comment" class="relative clear">
-    <span class="right lbl lbl-red comments"><a href="{{.Link}}#comment">{{.Content.CommentNum}}</a></span>
-    <h4 id="comment-title">Comments</h4>
-    <div id="comment-list">{{range .Comments}}{{if .IsValid}}
-      <div class="comment clear" id="comment-{{.Id}}">
-        <img class="c-avatar left" src="{{.Avatar}}" alt="{{.Author}}"/>
-        <div class="c-section">
-          <div class="c-meta clear">
-            <a class="c-reply lbl right" href="#" rel="{{.Id}}">Reply</a>
-            <p><a class="c-author{{if .IsAdmin}} admin{{end}}" href="{{.Url}}" target="_blank">{{.Author}}{{if .IsAdmin}}&nbsp;&nbsp;(admin){{end}}</a></p>
-            <p><span class="c-time">{{DateFormat .CreateTime "%B %d, %Y at %H:%M %p"}}</span></p>
-          </div>
-          <section class="c-content">{{Html .Content}}</section>{{if .ParentMd}}
-          <div class="c-p-md markdown">{{Html .ParentMd}}</div>{{end}}
+<ul id="comment-list" class="comment-list">
+  {{ range .Article.Comments }}
+  <li id="comment-{{ .Id }}" class="comment">
+    <article id="div-comment-{{ .Id }}" class="comment-body">
+      <footer class="comment-meta">
+        <div class="comment-author vcard">
+          <img src="{{ .Avatar }}" width="60" height="60" alt="{{ .Avatar }}" class="comment-avatar">
+          <a href="{{ .Website }}" rel="external nofollow" class="comment-name">{{ .Author }}</a>
         </div>
-      </div>{{end}}{{end}}
-    </div>
-    <div id="comment-show" class="text-center">{{if .Content.IsComment}}
-      <button class="btn btn-green enable center">Comment</button>{{else}}
-      <button class="btn btn-red">Comment Closed</button>{{end}}
-    </div>{{if .Content.IsComment}}
-    <form id="comment-form" class="hide clear text-center form" action="/comment/{{.Content.Id}}/" method="post">
-      <p class="item"><input class="ipt ipt-half" type="text" name="user" required="required" placeholder="Name" id="comment-author"/></p>
-      <p class="item"><input class="ipt ipt-half" id="email" type="email" name="email" required="required" placeholder="Email" id="comment-email"/></p>
-      <p class="item"><input class="ipt ipt-half" id="website" type="url" name="url" placeholder="Website" id="comment-url"/></p>
-      <input id="comment-parent" type="hidden" value="0" name="pid"/>
-      <textarea class="ipt" name="content" id="comment-content" required="required"></textarea>
-      <button class="btn btn-blue left">Submit</button>
-      <button class="btn btn-green cancel-reply left" type="button">Cancel</button>
-    </form>{{end}}
-    <script type="text/template" id="comment-tpl">
-<div class="comment clear">
-            <img class="c-avatar left" src="{{.Avatar}}" alt=""/>
-            <div class="c-section">
-                <div class="c-meta clear">
-                    <a class="c-reply lbl right" href="#" rel="">Reply</a>
-                    <p><a class="c-author " href="{{.Url}}" target="_blank"></a></p>
-                    <p>
-                        <span class="c-time">Now</span>
-                        <span class="c-check">Your comment is awaiting moderation.
-</span>
-                    </p>
-                </div>
-                <section class="c-content"></section>
-                <div class="c-p-md markdown"></div>
-            </div>
+        <div class="comment-metadata">
+          <a href="#" class="comment-date">
+            <time datetime="{{ DateFormat .CreatedAt "%Y-%m-%dT%H:%M:%S%z" }}">{{ DateFormat .CreatedAt "%B %d, %Y at %H:%M" }}</time>
+          </a>
         </div>
-    </script>
+      </footer>
+      {{if .Parent}}<div class="comment-parent markdown">{{Html .ParentContent}}</div>{{end}}
+      <div class="comment-content">{{Html .Content }}</div>
+      <button rel="{{ .Id }}" class="button comment-reply" aria-label="">Reply</button>
+    </article>
+  </li>
+  {{ end }}
 
+</ul>
+
+
+<button id="comment-show" class="button">Comment</button>
+
+<form id="comment-form" class="hide" action="/comment/{{.Content.Id}}/" method="post">
+  <p class="comment-form-author">
+    <label for="author">Name <span class="required">*</span></label>
+     <input id="author" name="author" type="text" value="" size="30" aria-required="true" required="required">
+   </p>
+  <p class="comment-form-email">
+    <label for="email">Email <span class="required">*</span></label>
+     <input id="email" name="email" type="text" value="" size="30" aria-required="true" required="required">
+   </p>
+  <p class="comment-form-website">
+    <label for="website">Website</label>
+     <input id="website" name="website" type="text" value="" size="30" aria-required="true" required="required">
+   </p>
+  <input id="comment-parent" type="hidden" value="0" name="pid"/>
+  <div class="comment-form-comment">
+    <label for="comment">Comment <span class="required">*</span></label>
+    <div id="comment-reply" class="comment-reply markdown"></div>
+    <button id="cancel-reply" class="button cancel-reply left hidden" type="button">Cancel Reply</button>
+    <textarea id="comment-content" name="comment" cols="45" rows="8" required="required"></textarea>
   </div>
+  <button class="button left">Submit</button>
+  <button id="comment-cancel" class="button left" type="button">Cancel</button>
+</form>
 
-</section>
+<script type="text/template" id="comment-tpl">
+  <li id="comment" class="comment">
+    <article id="div-comment" class="comment-body">
+      <footer class="comment-meta">
+        <div class="comment-author vcard">
+          <img src="" width="60" height="60" alt="" class="comment-avatar">
+          <a href="" rel="external nofollow" id="comment-name" class="comment-name"></a>
+        </div>
+        <div class="comment-metadata">
+          <span class="comment-message"></span>
+          <a href="#" class="comment-date">
+            <time datetime=""></time>
+          </a>
+        </div>
+      </footer>
+      <div class="comment-content">
+        <p></p>
+      </div>
+      <div class="reply">
+        <a rel="" class="comment-reply-link" href="" onclick="" aria-label="">Reply</a>
+      </div>
+    </article>
+  </li>
+</script>

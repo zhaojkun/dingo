@@ -73,21 +73,28 @@ function initComment() {
     //     $('.c-info-fields').removeClass("hide");
     //     return false;
     // });
-    $('#comment-show').on("click", ".enable", function () {
-        $("#comment-show").remove();
+    $('#comment-show').on("click", function () {
+        $('#comment-show').hide();
         $('#comment-form').removeClass("hide");
     });
+    $('#comment-cancel').on("click", function () {
+        $('#comment-form').addClass("hide");
+        $('#comment-show').show();
+    });
     $('#comment-form').ajaxForm(function (json) {
+      console.log(json);
         if (json.res) {
             localStorage.setItem("comment-author", $('#comment-author').val());
             localStorage.setItem("comment-email", $('#comment-email').val());
             localStorage.setItem("comment-url", $('#comment-url').val());
             localStorage.setItem("comment-avatar", json.comment.avatar);
             var tpl = $($('#comment-tpl').html());
-            tpl.find(".c-avatar").attr("src", json.comment.avatar).attr("alt", json.comment.author);
-            tpl.find(".c-author").attr("href", json.comment.url).text(json.comment.author);
-            tpl.find(".c-reply").attr("rel", json.comment.id);
-            tpl.find(".c-content").html(json.comment.content);
+            tpl.find(".comment-avatar").attr("src", json.comment.avatar).attr("alt", json.comment.avatar);
+            tpl.find(".comment-name").attr("href", json.comment.website).text(json.comment.author);
+            tpl.find(".comment-reply").attr("rel", json.comment.id);
+            tpl.find(".comment-content").html("<p>" + json.comment.content + "</p>");
+            var date = new Date(json.comment.create_time);
+            tpl.find(".comment-message").html("Your comment is awaiting moderation.");
             if (json.comment.parent_md) {
                 tpl.find(".c-p-md").html(marked(json.comment.parent_md));
             } else {
@@ -95,7 +102,7 @@ function initComment() {
             }
             tpl.attr("id", "comment-" + json.comment.id);
             if (json.comment.status == "approved") {
-                tpl.find(".c-check").remove();
+                tpl.find(".comment-check").remove();
             }
             $list.append(tpl);
             $('.cancel-reply').trigger("click");
@@ -104,24 +111,21 @@ function initComment() {
             alert("Can not submit comment!");
         }
     });
-    $list.on("click", ".c-reply", function () {
-        $('.reply-md').remove();
+    $list.on("click", ".comment-reply", function () {
         var id = $(this).attr("rel");
         var pc = $('#comment-' + id);
-        var md = "> @" + pc.find(".c-author").text() + "\n\n";
-        md += "> " + pc.find(".c-content").html() + "\n";
-        $('#comment-content').before('<div class="reply-md markdown">' + marked(md) + '</div>');
-        $('#comment-parent').val(id);
-        if ($('#comment-show').length) {
-            $('#comment-show .enable').trigger("click");
-        }
+        var md = "> @" + pc.find(".comment-name").text() + "\n\n";
+        md += "> " + pc.find(".comment-content").html() + "\n";
+        $('#comment-reply').html(marked(md));
+        $('#comment-show').hide();
+        $('#comment-form').removeClass("hide");
         $('.cancel-reply').show();
         var top = $('#comment-form').offset().top;
         $('body,html').animate({scrollTop: top}, 500);
         return false;
     });
     $('.cancel-reply').on("click", function () {
-        $('.reply-md').remove();
+        $('#comment-reply').empty();
         $('#comment-parent').val(0);
         $(this).hide();
         return false;

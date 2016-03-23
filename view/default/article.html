@@ -1,95 +1,44 @@
-{{ extends "/home.layout" }}
+{{ extends "/default.html" }}
 
 {{ define "content"}}
-<div id="article-container" class="clear container960">
-  <section id="main">
-    <article id="page-undefined" class="article article-type-page" itemscope="" itemprop="blogPost">
-      {{with .Article}}
-      <div class="article-inner">
-        <header class="article-header">
-          <a href="{{ .Url }}">
-            <h1 class="article-title" itemprop="name">
-              {{ .Title }}
-            </h1>
-          </a>
-          <div class="article-meta">
-            <div class="article-date">
-              <i class="fa fa-calendar"></i>
-              <time datetime="{{ .PublishedAt }}" itemprop="datePublished">{{DateFormat .PublishedAt "%m %b, %Y"}}</time>
-            </div>
+<div id="content">
+			<article class="post">
+				<div class="row">
+					<div class="col-lg-12">
 
-            <div class="article-category">
-              <i class="fa fa-tags"></i>
-              {{ range .Tags }}
-              <a class="article-category-link" href="{{ .Url }}">{{.Name}}</a>
-              {{ end }}
-            </div>
+						<h1 class="post-title">{{ .Article.Title }}</h1>
+      			<div class="post-meta"><span>By</span> <a href="#" title="{{ .Article.Author.Name }}">{{ .Article.Author.Name }}</a>,  <time datetime="{{DateFormat .Article.PublishedAt "%Y-%m-%d"}}">{{ DateFormat .Article.PublishedAt "%b %d, %Y"}}</time></div>
+					</div>
+				</div>
 
-            <div class="article-meta">
-              <i class="fa fa-eye"></i>
-              {{ .Hits }}
-            </div>
-
-            <div class="article-meta">
-              <i class="fa fa-comment"></i>
-              {{ .CommentNum }}
-            </div>
-          </div>
-        </header>
-        <div class="article-entry" itemprop="articleBody">
-            {{Html .Html}}
-        </div>
-      </div>
-      {{end}}
-
-      <div class="pager text-center" id="article-pager">
-        {{if .Pager.IsNext}}<a href="/p/{{.Pager.Next}}/" class="item left">Older Posts</a>{{end}}
-        {{if .Pager.IsPrev}}<a href="/p/{{.Pager.Prev}}/" class="item right">Newer Posts</a>{{end}}
-      </div>
-
-    </article>
-
-    {{ include "comment.html" }}
-
-  </section>
-
-</div>
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="post-content">
+              {{Html .Article.Html }}
+						</div>
+						<div class="post-share">
+							<ul class="social-icons">
+								<li><a href="https://www.facebook.com/sharer/sharer.php" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" class="button button-social button-facebook" title="Share on Facebook"><i class="fa fa-facebook"></i></a></li>
+								<li><a href="http://twitter.com/share?text=Kindle%20and%20e-books%20revived%20reading%2C%20study%20shows&amp;url=" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" class="button button-social button-twitter" title="Share on Twitter"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="https://plus.google.com/share?url=" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" class="button button-social button-google-plus" title="Share on Google Plus"><i class="fa fa-google-plus"></i></a></li>
+								<li><a href="http://www.linkedin.com/shareArticle" onclick="window.open(this.href, 'linkedin-share', 'width=490,height=530');return false;" class="button button-social button-linkedin" title="Share on LinkedIn"><i class="fa fa-linkedin"></i></a></li>
+								<li><a href="mailto:" class="button button-social" title="Share via email"><i class="fa fa-envelope"></i></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="post-comments">
+							<h2>Comments</h2>
+							<div class="row">
+								<div class="col-lg-12">
+									{{ include "comment.html" }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+		</div>
 {{end}}
-
-
-{{ define "sidebar"}}
-<aside id="sidebar">
-
-  <div class="widget-wrap">
-    <h3 class="widget-title">recents</h3>
-    <div class="widget">
-      <ul id="recent-post" class="">
-        {{range .RecentArticles}}
-        <li>
-          <div class="item-inner">
-            <p class="item-category"><a class="article-category-link" href="">LifeStyle</a></p>
-            <p class="item-title"><a href="{{.Url}}" class="title">{{.Title}}</a></p>
-            <p class="item-date"><time datetime="{{ DateFormat .PublishedAt "%Y-%m-%d %H:%M"}}" itemprop="datePublished">{{ DateFormat .PublishedAt "%Y-%m-%d %H:%M"}}</time></p>
-          </div>
-        </li>
-        {{end}}
-      </ul>
-    </div>
-  </div>
-
-  <div class="widget-wrap">
-    <h3 class="widget-title">tags</h3>
-    <div class="widget">
-      <ul class="tag-list">
-        {{range .Tags}}
-        <li class="tag-list-item">
-          <a class="tag-list-link" href="{{.Url}}">{{.Name}}</a>
-          <span class="tag-list-count">2</span>
-        </li>
-        {{end}}
-      </ul>
-    </div>
-  </div>
-
-</aside>
-{{ end }}

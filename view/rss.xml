@@ -1,8 +1,8 @@
-{{Html `<?xml version="1.0" encoding="UTF-8"?>`}}
+{{ Html `<?xml version="1.0" encoding="UTF-8"?>` }}
 <rss version="2.0">
     <channel>
         <title>{{.Title}}</title>
-        <link>{{.Link}}/</link>
+        <link>{{.Link}}</link>
         <description>{{.Desc}}</description>
         <pubDate>{{.Created}}</pubDate>{{range .Articles}}
         <item>
