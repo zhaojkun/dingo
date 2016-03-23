@@ -184,8 +184,9 @@ var stmtGetAllCommentList = commentSelector.Copy().OrderBy(`created_at DESC`).Li
 var stmtGetApprovedCommentList = commentSelector.Copy().Where(`approved = 1`).OrderBy(`created_at DESC`).Limit(`?`).Offset(`?`).SQL()
 var stmtGetCommentById = commentSelector.Copy().Where(`id = ?`).SQL()
 var stmtGetApprovedCommentListByPostId = commentSelector.Copy().Where(`post_id = ?`, `approved = 1`).OrderBy(`created_at DESC`).SQL()
-var stmtInsertComment = `INSERT OR REPLACE INTO comments (id, uuid, post_id, author, author_email, author_url, author_ip, created_at, content, approved, agent, parent, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-var stmtDeleteCommentById = `DELETE FROM comments WHERE id = ?`
+
+const stmtInsertComment = `INSERT OR REPLACE INTO comments (id, uuid, post_id, author, author_email, author_url, author_ip, created_at, content, approved, agent, parent, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+const stmtDeleteCommentById = `DELETE FROM comments WHERE id = ?`
 
 // Users
 const stmtGetUserById = `SELECT id, name, slug, email, image, cover, bio, website, location FROM users WHERE id = ?`
