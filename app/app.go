@@ -5,34 +5,14 @@ import (
 	"github.com/dinever/dingo/app/model"
 	"github.com/dinever/dingo/app/utils"
 	"github.com/dinever/golf"
-	"log"
 	"path/filepath"
-	"runtime"
 )
 
 var (
 	App *Golf.Application
 )
 
-func Install() {
-	_, filename, _, ok := runtime.Caller(1)
-	if !ok {
-
-	}
-	viewPath := filepath.Join(filepath.Dir(filename), "view")
-	staticPath := filepath.Join(filepath.Dir(filename), "static")
-	err := utils.CopyDir(viewPath, "view")
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = utils.CopyDir(staticPath, "static")
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func Init() {
-	// Install()
 	App = Golf.New()
 	model.Initialize()
 
@@ -64,6 +44,12 @@ func Init() {
 	App.NotFoundHandler = handler.NotFoundHandler
 
 	println("Application Started")
+}
+
+func CreateSampleData() {
+	model.SetSetting("site_url", "http://example.com/", "blog")
+	model.SetSetting("title", "Dingo Blog", "blog")
+	model.SetSetting("sub_title", "Another blog created by Dingo", "blog")
 }
 
 func registerAdminURLHandlers() {
@@ -121,8 +107,8 @@ func registerHomeHandler() {
 	App.Post("/comment/:id/", handler.CommentHandler)
 	App.Get("/tag/:tag/?", handler.TagHandler)
 	App.Get("/tag/:tag/page/:page/?", handler.TagHandler)
-	//	App.Get("/feed/?", handler.RssHandler)
-	//	App.Get("/sitemap.xml", handler.SiteMapHandler)
+	App.Get("/feed/?", handler.RssHandler)
+	App.Get("/sitemap.xml", handler.SiteMapHandler)
 	App.Get("/:slug/?", statsChain.Final(handler.ContentHandler))
 }
 

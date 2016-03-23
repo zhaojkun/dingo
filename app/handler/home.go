@@ -4,52 +4,13 @@ import (
 	"github.com/dinever/dingo/app/model"
 	"github.com/dinever/dingo/app/utils"
 	"github.com/dinever/golf"
-	"log"
-	"strings"
 	"html/template"
-	"time"
+	"log"
 	"net/url"
 	"strconv"
+	"strings"
+	"time"
 )
-
-//func getArticleListSize() int {
-//	size, _ := strconv.Atoi(model.GetSetting("article_size"))
-//	if size < 1 {
-//		size = 5
-//	}
-//	return size
-//}
-
-//func updateSidebarData(data map[string]interface{}) {
-//	popNumStr, err := model.GetSettingValue("popular_size")
-//	if err != nil {
-//		popNumStr = "5"
-//	}
-//	popNum, _ := strconv.Atoi(popNumStr)
-//	if popNum < 1 {
-//		popNum = 4
-//	}
-//	cmtNumStr, err := model.GetSettingValue("recent_comment_size")
-//	if err != nil {
-//		cmtNumStr = "5"
-//	}
-//	cmtNum, _ := strconv.Atoi(cmtNumStr)
-//	if cmtNum < 1 {
-//		cmtNum = 3
-//	}
-//	recentNumStr, err := model.GetSettingValue("popular_size")
-//	if err != nil {
-//		recentNumStr = "5"
-//	}
-//	recentNum, _ := strconv.Atoi(recentNumStr)
-//	if recentNum < 1 {
-//		recentNum = 4
-//	}
-//	data["Popular"], _, _ = model.GetPostList(1, int64(popNum), false, true, "created_at")
-//	data["RecentArticles"], _, _ = model.GetPostList(1, int64(popNum), false, true, "published_at")
-//	data["RecentComment"], _, _ = model.GetPostList(1, int64(popNum), false, true, "updated_at")
-//	data["Tags"], _ = model.GetAllTags()
-//}
 
 func RegisterFunctions(app *Golf.Application) {
 	app.View.FuncMap["Tags"] = getAllTags
@@ -95,7 +56,6 @@ func ContentHandler(ctx *Golf.Context) {
 	}
 }
 
-
 func CommentHandler(ctx *Golf.Context) {
 	id, _ := ctx.Param("id")
 	cid, _ := strconv.Atoi(id)
@@ -124,7 +84,7 @@ func CommentHandler(ctx *Golf.Context) {
 		_, err := c.Save()
 		if err != nil {
 			ctx.JSON(map[string]interface{}{
-				"res":     false,
+				"res": false,
 				"msg": "Can not comment on this post.",
 			})
 		}
@@ -179,72 +139,66 @@ func TagHandler(ctx *Golf.Context) {
 	ctx.Loader("theme").Render("tag.html", data)
 }
 
-//func SiteMapHandler(ctx *Golf.Context) {
-//	baseUrl := model.GetSetting("site_url")
-//	println(baseUrl)
-//	article, _ := model.GetPublishArticleList(1, 50)
-//	navigators := model.GetNavigators()
-//	now := time.Unix(utils.Now(), 0).Format(time.RFC3339)
-//
-//	articleMap := make([]map[string]string, len(article))
-//	for i, a := range article {
-//		m := make(map[string]string)
-//		m["Link"] = strings.Replace(baseUrl+a.Link(), baseUrl+"/", baseUrl, -1)
-//		m["Created"] = time.Unix(a.CreateTime, 0).Format(time.RFC3339)
-//		articleMap[i] = m
-//	}
-//
-//	navMap := make([]map[string]string, 0)
-//	for _, n := range navigators {
-//		m := make(map[string]string)
-//		if n.Link == "/" {
-//			continue
-//		}
-//		if strings.HasPrefix(n.Link, "/") {
-//			m["Link"] = strings.Replace(baseUrl+n.Link, baseUrl+"/", baseUrl, -1)
-//		} else {
-//			m["Link"] = n.Link
-//		}
-//		m["Created"] = now
-//		navMap = append(navMap, m)
-//	}
-//
-//	ctx.Header["Content-Type"] = "application/rss+xml;charset=UTF-8"
-//	ctx.Loader("base").Render("sitemap.xml", map[string]interface{}{
-//		"Title":      model.GetSetting("site_title"),
-//		"Link":       baseUrl,
-//		"Created":    now,
-//		"Articles":   articleMap,
-//		"Navigators": navMap,
-//	})
-//}
-//
-//func RssHandler(ctx *Golf.Context) {
-//	baseUrl := model.GetSetting("site_url")
-//	article, _ := model.GetPublishArticleList(1, 20)
-//	author := model.GetUsersByRole("ADMIN")[0]
-//
-//	articleMap := make([]map[string]string, len(article))
-//	for i, a := range article {
-//		m := make(map[string]string)
-//		m["Title"] = a.Title
-//		m["Link"] = strings.Replace(baseUrl+a.Link(), baseUrl+"/", baseUrl, -1)
-//		m["Author"] = author.Nick
-//		str := utils.Markdown2Html(a.Content())
-//		str = strings.Replace(str, `src="/`, `src="`+strings.TrimSuffix(baseUrl, "/")+"/", -1)
-//		str = strings.Replace(str, `href="/`, `href="`+strings.TrimSuffix(baseUrl, "/")+"/", -1)
-//		m["Desc"] = str
-//		m["Created"] = time.Unix(a.CreateTime, 0).Format(time.RFC822)
-//		articleMap[i] = m
-//	}
-//
-//	ctx.Header["Content-Type"] = "application/rss+xml;charset=UTF-8"
-//
-//	ctx.Loader("base").Render("rss.xml", map[string]interface{}{
-//		"Title":    model.GetSetting("site_title"),
-//		"Link":     baseUrl,
-//		"Desc":     model.GetSetting("site_description"),
-//		"Created":  time.Unix(utils.Now(), 0).Format(time.RFC822),
-//		"Articles": articleMap,
-//	})
-//}
+func SiteMapHandler(ctx *Golf.Context) {
+	baseUrl := model.GetSettingValue("site_url")
+	articles, _, _ := model.GetPostList(1, 50, false, true, "published_at DESC")
+	navigators := model.GetNavigators()
+	now := utils.Now().Format(time.RFC3339)
+
+	articleMap := make([]map[string]string, len(articles))
+	for i, a := range articles {
+		m := make(map[string]string)
+		m["Link"] = strings.Replace(baseUrl+a.Url(), baseUrl+"/", baseUrl, -1)
+		m["Created"] = a.PublishedAt.Format(time.RFC3339)
+		articleMap[i] = m
+	}
+
+	navMap := make([]map[string]string, 0)
+	for _, n := range navigators {
+		m := make(map[string]string)
+		if n.Url == "/" {
+			continue
+		}
+		if strings.HasPrefix(n.Url, "/") {
+			m["Link"] = strings.Replace(baseUrl+n.Url, baseUrl+"/", baseUrl, -1)
+		} else {
+			m["Link"] = n.Url
+		}
+		m["Created"] = now
+		navMap = append(navMap, m)
+	}
+
+	ctx.Header["Content-Type"] = "application/rss+xml;charset=UTF-8"
+	ctx.Loader("base").Render("sitemap.xml", map[string]interface{}{
+		"Title":      model.GetSettingValue("site_title"),
+		"Link":       baseUrl,
+		"Created":    now,
+		"Articles":   articleMap,
+		"Navigators": navMap,
+	})
+}
+
+func RssHandler(ctx *Golf.Context) {
+	baseUrl := model.GetSettingValue("site_url")
+	articles, _, _ := model.GetPostList(1, 20, false, true, "published_at DESC")
+	articleMap := make([]map[string]string, len(articles))
+	for i, a := range articles {
+		m := make(map[string]string)
+		m["Title"] = a.Title
+		m["Link"] = a.Url()
+		m["Author"] = a.Author.Name
+		m["Desc"] = a.Excerpt()
+		m["Created"] = a.CreatedAt.Format(time.RFC822)
+		articleMap[i] = m
+	}
+
+	ctx.Header["Content-Type"] = "text/xml; charset=utf-8"
+
+	ctx.Loader("base").Loader("base").Render("rss.xml", map[string]interface{}{
+		"Title":    model.GetSettingValue("site_title"),
+		"Link":     baseUrl,
+		"Desc":     model.GetSettingValue("site_description"),
+		"Created":  utils.Now().Format(time.RFC822),
+		"Articles": articleMap,
+	})
+}
