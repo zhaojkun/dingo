@@ -334,11 +334,9 @@ func SettingCustomHandler(ctx *Golf.Context) {
 }
 
 func SettingNavHandler(ctx *Golf.Context) {
-	//	order := ctx.Request.Form["order"]
-	//	text := ctx.Request.Form["text"]
-	title := ctx.Request.FormValue("title")
-	url := ctx.Request.FormValue("link")
-	model.SetSetting(title, url, "navigation")
+	labels := ctx.Request.Form["label"]
+	urls := ctx.Request.Form["url"]
+	model.SetNavigators(labels, urls)
 	ctx.JSON(map[string]interface{}{
 		"res": true,
 	})

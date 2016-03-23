@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"encoding/json"
 	"github.com/twinj/uuid"
 	"time"
 )
@@ -16,11 +17,32 @@ type Setting struct {
 	CreatedBy int64
 }
 
-type navItem struct {
-	Order int
-	Text  string
-	Title string
-	Link  string
+type Navigator struct {
+	Label string `json:"label"`
+	Url   string `json:"url"`
+}
+
+func GetNavigators() []*Navigator {
+	var navs []*Navigator
+	navStr := GetSettingValue("navigation")
+	json.Unmarshal([]byte(navStr), &navs)
+	return navs
+}
+
+func SetNavigators(labels, urls []string) error {
+	var navs []*Navigator
+	for i, l := range labels {
+		if len(l) < 1 {
+			continue
+		}
+		navs = append(navs, &Navigator{l, urls[i]})
+	}
+	navStr, err := json.Marshal(navs)
+	if err != nil {
+		return err
+	}
+	err = SetSetting("navigation", string(navStr), "navigation")
+	return err
 }
 
 func GetSetting(k string) (*Setting, error) {
@@ -96,10 +118,6 @@ func SetSetting(k, v, t string) error {
 	now := time.Now()
 	setting.CreatedAt = &now
 	return SaveSetting(setting)
-}
-
-func GetNavigators() []*Setting {
-	return GetSettings("navigation")
 }
 
 func SetSettingIfNotExists(k, v, t string) error {

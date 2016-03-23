@@ -75,83 +75,71 @@
               </form>
             </div>
             <div id="nav" class="col s12">
-
-              <form id="setting-nav-form" class="setting-form form form-align setting-panel" action="/admin/setting/nav/" method="post">{{range .Navigators}}
-                <div class="row">
-                  <div class="input-field col s1">
-                    <input id="order" name="order" type="number" class="validate" value="">
-                    <label for="order">Order</label>
+              <form id="setting-nav-form" class="setting-form form form-align setting-panel" action="/admin/setting/nav/" method="post">
+                <div id="navigators">
+                  {{range .Navigators}}
+                  <div class="row">
+                    <div class="input-field col s5">
+                      <input id="label" name="label" type="text" class="validate" value="{{.Label}}">
+                      <label for="label">Label</label>
+                    </div>
+                    <div class="input-field col s5">
+                      <input id="url" name="url" type="text" class="validate" value="{{.Url}}">
+                      <label for="url">URL</label>
+                    </div>
+                    <div class="input-field col s12 m2 l2">
+                      <a id="del-nav" class="btn waves-effect waves-light red right" href="#">Delete</a>
+                    </div>
                   </div>
-                  <div class="input-field col s3">
-                    <input id="text" name="text" type="text" class="validate" value="">
-                    <label for="label">Label</label>
-                  </div>
-                  <div class="input-field col s3">
-                    <input id="title" name="title" type="text" class="validate" value="{{.Key}}">
-                    <label for="title">Title</label>
-                  </div>
-                  <div class="input-field col s3">
-                    <input id="link" name="link" type="text" class="validate" value="{{.Value}}">
-                    <label for="link">URL</label>
-                  </div>
-                  <div class="input-field col s12 m2 l2">
-                    <a id="del" class="btn waves-effect waves-light red right" href="#">Delete</a>
-                  </div>
+                  {{end}}
                 </div>
-                {{end}}
 
                 <div class="row">
                   <button class="btn waves-effect waves-light blue">Save</button>
-                  <a class="btn waves-effect waves-light green" id="add" rel="#nav-item">Add</a>
+                  <a class="btn waves-effect waves-light green" id="add-nav" rel="#nav-item">Add</a>
                 </div>
 
               </form>
 
               <script type="text/template" id="nav-item">
 <div class="row">
-                  <div class="input-field col s1">
-                    <input id="order" name="order" type="number" class="validate" value="1">
-                    <label for="order">Order</label>
-                  </div>
-                  <div class="input-field col s3">
-                    <input id="text" name="text" type="text" class="validate" value="">
+                  <div class="input-field col s5">
+                    <input id="label" name="lbael" type="text" class="validate" value="">
                     <label for="label">Label</label>
                   </div>
-                  <div class="input-field col s3">
-                    <input id="title" name="title" type="text" class="validate" value="">
-                    <label for="title">Title</label>
-                  </div>
-                  <div class="input-field col s3">
-                    <input id="link" name="link" type="text" class="validate" value="">
-                    <label for="link">URL</label>
+                  <div class="input-field col s5">
+                    <input id="url" name="url" type="text" class="validate" value="">
+                    <label for="url">URL</label>
                   </div>
                   <div class="input-field col s12 m2 l2">
-                    <a id="del" class="btn waves-effect waves-light red right" href="#">Delete</a>
+                    <a id="del-nav" class="btn waves-effect waves-light red right" href="#">Delete</a>
                   </div>
                 </div>
               </script>
 
             </div>
             <div id="custom" class="col s12">
-              <form id="setting-custom-form" class="setting-form form form-align setting-panel" action="/admin/setting/custom/" method="post">{{range .Custom}}
-                <div class="row">
-                  <div class="input-field col s5">
-                    <input id="key" name="key" type="text" class="validate" value="{{.Key}}">
-                    <label for="order">Key</label>
+              <form id="setting-custom-form" class="setting-form form form-align setting-panel" action="/admin/setting/custom/" method="post">
+                <div id="custom-settings">
+                  {{range .Custom}}
+                  <div class="row">
+                    <div class="input-field col s5">
+                      <input name="key" type="text" class="validate" value="{{.Key}}">
+                      <label>Key</label>
+                    </div>
+                    <div class="input-field col s5">
+                      <input name="value" type="text" class="validate" value="{{.Value}}">
+                      <label>Value</label>
+                    </div>
+                    <div class="input-field col s12 m2 l2">
+                      <a id="del-custom" class="btn waves-effect waves-light red right" href="#">Delete</a>
+                    </div>
                   </div>
-                  <div class="input-field col s5">
-                    <input id="value" name="value" type="text" class="validate" value="{{.Value}}">
-                    <label for="label">Value</label>
-                  </div>
-                  <div class="input-field col s12 m2 l2">
-                    <a id="del" class="btn waves-effect waves-light red right" href="#">Delete</a>
-                  </div>
+                  {{end}}
                 </div>
-
-                {{end}}
                 <div class="row">
                   <button class="btn waves-effect waves-light blue">Save</button>
-                  <a class="btn waves-effect waves-light green" id="add" rel="#custom-item">Add</a>
+                  <a class="btn waves-effect waves-light green" id="add-custom" rel="#custom-item">Add</a>
                 </div>
 
               </form>
@@ -159,15 +147,15 @@
               <script type="text/template" id="custom-item">
                 <div class="row">
                   <div class="input-field col s5">
-                    <input id="key" name="key" type="text" class="validate" value="">
-                    <label for="order">Key</label>
+                    <input name="key" type="text" class="validate" value="">
+                    <label>Key</label>
                   </div>
                   <div class="input-field col s5">
-                    <input id="value" name="value" type="text" class="validate" value="">
-                    <label for="label">Value</label>
+                    <input name="value" type="text" class="validate" value="">
+                    <label>Value</label>
                   </div>
                   <div class="input-field col s12 m2 l2">
-                    <a id="del" class="btn waves-effect waves-light red right" href="#">Delete</a>
+                    <a id="del-custom" class="btn waves-effect waves-light red right" href="#">Delete</a>
                   </div>
                 </div>
               </script>
@@ -190,22 +178,30 @@
     $('ul.tabs').tabs();
   });
 
-    $(function () {
-        $('.setting-form').ajaxForm(function (json) {
-            if (json.res) {
-              Materialize.toast("Saved", 2500, "green");
-            } else {
-              Materialize.toast(json.msg, 2500, "green");
-            }
-        }).on("click","#add",function(e){
-            e.preventDefault();
-            $(this).parent().parent().prepend($($(this).attr("rel")).html());
-        }).on("click","#del",function(e){
-            e.preventDefault();
-            if(confirm("Delete this item？")){
-                $(this).parent().parent().remove();
-            }
-        })
+  $(function () {
+    $('.setting-form').ajaxForm(function (json) {
+      if (json.res) {
+        Materialize.toast("Saved", 2500, "green");
+      } else {
+        Materialize.toast(json.msg, 2500, "green");
+      }
+    }).on("click","#add-custom",function(e) {
+      e.preventDefault();
+      $("#custom-settings").append($($(this).attr("rel")).html());
+    }).on("click", "#add-nav", function(e) {
+      e.preventDefault();
+      $("#navigators").append($($(this).attr("rel")).html());
+    }).on("click","#del-nav",function(e){
+      e.preventDefault();
+      if(confirm("Delete this item？")){
+        $(this).parent().parent().remove();
+      }
+    }).on("click","#del-custom",function(e){
+      e.preventDefault();
+      if(confirm("Delete this item？")){
+        $(this).parent().parent().remove();
+      }
     })
+  })
 </script>
 {{ end }}
