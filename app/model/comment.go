@@ -1,10 +1,10 @@
 package model
 
 import (
-	"time"
 	"database/sql"
-	"github.com/twinj/uuid"
 	"github.com/dinever/dingo/app/utils"
+	"github.com/twinj/uuid"
+	"time"
 )
 
 // Comment struct defines a comment item data.
