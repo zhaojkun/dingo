@@ -262,7 +262,7 @@ func GetPostsByTag(tagId, page, size int64, onlyPublished bool, orderBy string) 
 		return nil, nil, err
 	}
 	pager = utils.NewPager(page, size, count)
-	rows, err := db.Query(stmtGetPostsByTag, tagId, size, pager.Begin - 1)
+	rows, err := db.Query(stmtGetPostsByTag, tagId, size, pager.Begin-1)
 	defer rows.Close()
 	if err != nil {
 		log.Printf("[Error]: ", err.Error())
