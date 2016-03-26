@@ -6,6 +6,7 @@ import (
 	"github.com/dinever/dingo/app/utils"
 	"github.com/dinever/golf"
 	"path/filepath"
+	"fmt"
 )
 
 var (
@@ -42,8 +43,6 @@ func Init() {
 	App.Static("/", filepath.Join("view", theme, "assets"))
 
 	App.NotFoundHandler = handler.NotFoundHandler
-
-	println("Application Started")
 }
 
 func CreateSampleData() {
@@ -112,8 +111,9 @@ func registerHomeHandler() {
 	App.Get("/:slug/?", statsChain.Final(handler.ContentHandler))
 }
 
-func Run() {
+func Run(portNumber string) {
 	registerAdminURLHandlers()
 	registerHomeHandler()
-	App.Run(":5693")
+	fmt.Println("Application Started on port " + portNumber)
+	App.Run(":" + portNumber)
 }
