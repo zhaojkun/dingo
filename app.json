@@ -4,7 +4,4 @@
   "repository": "https://github.com/dinever/dingo",
   "keywords": ["blog"],
   "success_url": "/signup",
-  "env": {
-    "SLACK_URL": null
-  }
 }
