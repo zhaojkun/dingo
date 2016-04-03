@@ -3,5 +3,10 @@
   "description": "Blog engine written in Go",
   "repository": "https://github.com/dinever/dingo",
   "keywords": ["blog"],
-  "success_url": "/signup"
+  "success_url": "/signup",
+  "buildpacks": [
+    {
+      "url": "heroku/go"
+    }
+  ]
 }
