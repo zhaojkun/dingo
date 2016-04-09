@@ -4,15 +4,6 @@ html {
 header, main, footer {
   padding-left: 240px; }
 
-
-.login-body {
-  width: 400px;
-}
-
-.login-logo {
-  max-width: 250px !important;
-}
-
 .content {
   padding: 1% 2%; }
 
@@ -37,6 +28,7 @@ header, main, footer {
   text-align: center; }
 
 .side-nav.custom-side-nav {
+  z-index: 0;
   background: #64b5f6; }
   .side-nav.custom-side-nav li {
     padding: 0; }
