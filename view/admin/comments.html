@@ -109,13 +109,15 @@
             return false;
         });
         $('.c-approve').on("click", function () {
+            var comment = $(this);
             var id = $(this).attr("rel");
             $.ajax({
                 type: "put",
                 url: "/admin/comments/?id=" + id,
                 success: function (json) {
                     if (json.res) {
-                        $('#comment-' + id).find(".c-check").remove();
+                        Materialize.toast("Comment approved", 1000, "green");
+                        comment.removeClass("c-approve", "green").addClass("disabled").text("Approved");
                     } else {
                         alert("Unkown Error.");
                     }
