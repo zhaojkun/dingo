@@ -12,7 +12,7 @@ const Email string = "^(((([a-zA-Z]|\\d|[!#\\$%&'\\*\\+\\-\\/=\\?\\^_`{\\|}~]|[\
 var rxEmail = regexp.MustCompile(Email)
 
 func AuthLoginPageHandler(ctx *Golf.Context) {
-	ctx.Loader("admin").Render("login.html", nil)
+	ctx.Loader("admin").Render("login.html")
 }
 
 func AuthSignUpPageHandler(ctx *Golf.Context) {
