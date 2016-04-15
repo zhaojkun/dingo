@@ -68,7 +68,7 @@ func AuthSignUpHandler(ctx *Golf.Context) {
 		})
 		return
 	}
-	err := model.CreateNewUser(email, name, password)
+	err = model.CreateNewUser(email, name, password)
 	if err != nil {
 		ctx.Abort(500)
 		return
