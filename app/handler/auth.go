@@ -31,74 +31,70 @@ func AuthSignUpPageHandler(ctx *Golf.Context) {
 
 func AuthSignUpHandler(ctx *Golf.Context) {
 	userNum, err := model.GetNumberOfUsers()
-	if err != nil {
+	if err != nil || userNum == 0 {
 		ctx.Abort(403)
 		return
 	}
-	if userNum == 0 {
-		email := ctx.Request.FormValue("email")
-		if !rxEmail.MatchString(email) {
-			ctx.JSON(map[string]interface{}{
-				"res": false,
-				"msg": "Invalid email address.",
-			})
-			return
-		}
-		name := ctx.Request.FormValue("name")
-		password := ctx.Request.FormValue("password")
-		if len(password) < 5 {
-			ctx.JSON(map[string]interface{}{
-				"res": false,
-				"msg": "Password too short.",
-			})
-			return
-		}
-		if len(password) > 20 {
-			ctx.JSON(map[string]interface{}{
-				"res": false,
-				"msg": "Password too long.",
-			})
-			return
-		}
-		rePassword := ctx.Request.FormValue("re-password")
-		if password != rePassword {
-			ctx.JSON(map[string]interface{}{
-				"res": false,
-				"msg": "Password does not match.",
-			})
-			return
-		}
-		err := model.CreateNewUser(email, name, password)
-		if err != nil {
-			ctx.Abort(500)
-			return
-		}
-		user, err := model.GetUserByEmail(email)
-		if err != nil {
-			ctx.Abort(500)
-			return
-		}
-		rememberMe := ctx.Request.FormValue("remember-me")
-		var (
-			exp int
-			s   *model.Token
-		)
-		if rememberMe == "on" {
-			exp = 3600 * 24 * 3
-			s = model.CreateToken(user, ctx, int64(exp))
-		} else {
-			exp = 0
-			s = model.CreateToken(user, ctx, 3600)
-		}
-		ctx.SetCookie("token-user", strconv.Itoa(int(s.UserId)), exp)
-		ctx.SetCookie("token-value", s.Value, exp)
+
+	email := ctx.Request.FormValue("email")
+	if !rxEmail.MatchString(email) {
 		ctx.JSON(map[string]interface{}{
-			"res": true,
+			"res": false,
+			"msg": "Invalid email address.",
 		})
-	} else {
-		ctx.Abort(403)
 		return
 	}
+	name := ctx.Request.FormValue("name")
+	password := ctx.Request.FormValue("password")
+	if len(password) < 5 {
+		ctx.JSON(map[string]interface{}{
+			"res": false,
+			"msg": "Password too short.",
+		})
+		return
+	}
+	if len(password) > 20 {
+		ctx.JSON(map[string]interface{}{
+			"res": false,
+			"msg": "Password too long.",
+		})
+		return
+	}
+	rePassword := ctx.Request.FormValue("re-password")
+	if password != rePassword {
+		ctx.JSON(map[string]interface{}{
+			"res": false,
+			"msg": "Password does not match.",
+		})
+		return
+	}
+	err := model.CreateNewUser(email, name, password)
+	if err != nil {
+		ctx.Abort(500)
+		return
+	}
+	user, err := model.GetUserByEmail(email)
+	if err != nil {
+		ctx.Abort(500)
+		return
+	}
+	rememberMe := ctx.Request.FormValue("remember-me")
+	var (
+		exp int
+		s   *model.Token
+	)
+	if rememberMe == "on" {
+		exp = 3600 * 24 * 3
+		s = model.CreateToken(user, ctx, int64(exp))
+	} else {
+		exp = 0
+		s = model.CreateToken(user, ctx, 3600)
+	}
+	ctx.SetCookie("token-user", strconv.Itoa(int(s.UserId)), exp)
+	ctx.SetCookie("token-value", s.Value, exp)
+	ctx.JSON(map[string]interface{}{
+		"res": true,
+	})
 }
 
 func AuthLoginHandler(ctx *Golf.Context) {
