@@ -15,7 +15,7 @@ var (
 
 func Init() {
 	App = Golf.New()
-	model.Initialize()
+	model.Initialize("dingo.db")
 
 	App.Config.Set("app/static_dir", "static")
 	App.Config.Set("app.log_dir", "tmp/log")

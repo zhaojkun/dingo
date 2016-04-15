@@ -11,11 +11,11 @@ type Row interface {
 	Scan(dest ...interface{}) error
 }
 
-func Initialize() error {
+func Initialize(dbPath string) error {
 	tokens = make(map[string]*Token)
 
 	var err error
-	db, err = sql.Open("sqlite3", "dingo.db")
+	db, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return err
 	}
