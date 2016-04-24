@@ -5,17 +5,17 @@
   <div class="row">
     {{ range .Articles }}
     <article class="post tag-news tag-media featured col-sm-12">
-      <h2 class="post-title"><a href="{{ .Url }}" title="{{ .Title }}">{{ .Title }}</a></h2>
+      <h2 class="post-title"><a href="{{ .Url }}/" title="{{ .Title }}">{{ .Title }}</a></h2>
       <ul class="post-tags">
         {{ range .Tags }}
         <li>
-          <a href="{{ .Url }}" title="Tech">{{ .Name }}</a>
+          <a href="{{ .Url }}/" title="Tech">{{ .Name }}</a>
         </li>
         {{ end }}
       </ul>
       <div class="post-meta"><span>By</span> <a href="#" title="{{ .Author.Name }}">{{ .Author.Name }}</a>,  <time datetime="{{DateFormat .PublishedAt "%Y-%m-%d"}}">{{ DateFormat .PublishedAt "%b %d, %Y"}}</time></div>
       <div class="post-excerpt">{{.Excerpt}} ...</div>
-      <a href="{{ .Url }}" title="{{ .Title }}" class="read-more">Read more</a>
+      <a href="{{ .Url }}/" title="{{ .Title }}" class="read-more">Read more</a>
     </article>
     {{ end }}
   </div>

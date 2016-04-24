@@ -1,4 +1,4 @@
-{{ extends "/default.layout" }}
+{{ extends "/default.html" }}
 
 {{ define "body"}}
 <div class="breadcrumb grey lighten-3">
@@ -47,7 +47,7 @@
                 <td>{{if .IsPublished }}published{{else}}draft{{end}}
                 </td>
                 <td>
-                  <a class="btn-small white-text green" href="{{.Slug}}" rel="{{.Id}}">View</a>
+                  <a class="btn-small white-text green" href="/{{.Slug}}/" rel="{{.Id}}">View</a>
                   <a class="btn-small white-text blue" href="/admin/editor/{{.Id}}/" rel="{{.Id}}">Edit</a>
                   <a class="btn-small white-text red del" href="#" rel="{{.Id}}">Delete</a>
                 </td>

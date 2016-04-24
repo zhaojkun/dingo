@@ -9,7 +9,7 @@
         </div>
         <div class="comment-metadata">
           <a href="#" class="comment-date">
-            <time datetime="{{ DateFormat .CreatedAt "%Y-%m-%dT%H:%M:%S%z" }}">{{ DateFormat .CreatedAt "%B %d, %Y at %H:%M" }}</time>
+            <time datetime='{{ DateFormat .CreatedAt "%Y-%m-%dT%H:%M:%S%z" }}'>{{ DateFormat .CreatedAt "%B %d, %Y at %H:%M" }}</time>
           </a>
         </div>
       </footer>
@@ -36,7 +36,7 @@
    </p>
   <p class="comment-form-website">
     <label for="website">Website</label>
-     <input id="website" name="website" type="text" value="" size="30" aria-required="true" required="required">
+     <input id="website" name="website" type="text" value="" size="30">
    </p>
   <input id="comment-parent" type="hidden" value="0" name="pid"/>
   <div class="comment-form-comment">

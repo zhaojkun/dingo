@@ -6,8 +6,8 @@ import (
 	"github.com/dinever/dingo/app/model"
 	"github.com/dinever/dingo/app/utils"
 	"github.com/dinever/golf"
-	"path/filepath"
 	"os"
+	"path/filepath"
 )
 
 var (
@@ -25,7 +25,7 @@ func Init() {
 	registerMiddlewares()
 	registerFuncMap()
 	handler.RegisterFunctions(App)
-	theme := model.GetSettingValue("theme2")
+	theme := model.GetSettingValue("theme")
 	App.View.SetTemplateLoader("base", "view")
 	App.View.SetTemplateLoader("admin", filepath.Join("view", "admin"))
 	App.View.SetTemplateLoader("theme", filepath.Join("view", theme))
@@ -52,7 +52,12 @@ func registerFuncMap() {
 }
 
 func registerMiddlewares() {
-	App.Use(golf.LoggingMiddleware(os.Stdout), golf.RecoverMiddleware, golf.SessionMiddleware, golf.XSRFProtectionMiddleware)
+	App.Use(
+		golf.LoggingMiddleware(os.Stdout),
+		golf.RecoverMiddleware,
+		golf.SessionMiddleware,
+		golf.XSRFProtectionMiddleware,
+	)
 }
 
 func CreateSampleData() {

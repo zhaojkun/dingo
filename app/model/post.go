@@ -90,6 +90,11 @@ func (p *Post) Save() error {
 			return err
 		}
 	}
+	p.Slug = strings.TrimLeft(p.Slug, "/")
+	p.Slug = strings.TrimRight(p.Slug, "/")
+	if p.Slug == "" {
+		return fmt.Errorf("Slug can not be empty or root")
+	}
 	tagIds := make([]int64, 0)
 	// Insert tags
 	for _, t := range p.Tags {

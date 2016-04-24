@@ -14,7 +14,7 @@ func AdminHandler(ctx *golf.Context) {
 	user := userObj.(*model.User)
 	ctx.Loader("admin").Render("home.html", map[string]interface{}{
 		"Title":    "Dashboard",
-		"Statis":   model.NewStatis(),
+		"Statis":   model.NewStatis(ctx.App),
 		"User":     user,
 		"Messages": model.GetUnreadMessages(),
 		"Monitor":  utils.ReadMemStats(),
@@ -162,6 +162,7 @@ func AdminPageHandler(ctx *golf.Context) {
 	user := userObj.(*model.User)
 	i, _ := strconv.Atoi(ctx.Request.FormValue("page"))
 	pages, pager, err := model.GetPostList(int64(i), 10, true, false, `created_at`)
+	println(pages)
 	if err != nil {
 		panic(err)
 	}

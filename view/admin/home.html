@@ -1,4 +1,4 @@
-{{ extends "/default.layout" }}
+{{ extends "/default.html" }}
 
 {{ define "body"}}
 <div class="breadcrumb grey lighten-3">
@@ -32,16 +32,9 @@
     </div>
 
     <div class="card center">
-      <div class="card-content blue-grey white-text">
-        <p class="card-stats-title"><i class="mdi-file-attachment"></i> Files</p>
-        <h4 class="card-stats-number">{{.Statis.Files}}</h4>
-      </div>
-    </div>
-
-    <div class="card center">
-      <div class="card-content cyan white-text">
-        <p class="card-stats-title"><i class="mdi-social-people"></i> Memory Used</p>
-        <h4 class="card-stats-number">{{.Statis.Readers}}</h4>
+      <div class="card-content blue-grey darken-2 white-text">
+        <p class="card-stats-title"><i class="mdi-social-people"></i> Current sessions</p>
+        <h4 class="card-stats-number">{{.Statis.Sessions}}</h4>
       </div>
     </div>
 

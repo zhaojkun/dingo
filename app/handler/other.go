@@ -6,8 +6,6 @@ import (
 
 func NotFoundHandler(ctx *golf.Context, data ...map[string]interface{}) {
 	var renderData map[string]interface{}
-	ctx.SendStatus(404)
-	println("FUCKED UP")
 	if len(data) == 0 {
 		renderData = make(map[string]interface{})
 	} else {
