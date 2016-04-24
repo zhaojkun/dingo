@@ -246,7 +246,6 @@ func GetPostCreationDateById(post_id int64) (*time.Time, error) {
 
 func GetPostById(id int64) (*Post, error) {
 	// Get post
-	println(id)
 	row := db.QueryRow(stmtGetPostById, id)
 	return extractPost(row)
 }

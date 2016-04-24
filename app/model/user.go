@@ -147,7 +147,7 @@ func GetUserByEmail(email string) (*User, error) {
 	row := db.QueryRow(stmtGetUserByEmail, email)
 	err := scanUser(user, row)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	return user, nil
 }
