@@ -27,6 +27,7 @@
 				</div>
 			</div>
 		</div>
+		{{ if .Article.AllowComment }}
 		<div class="row">
 			<div class="col-md-12">
 				<div class="post-comments">
@@ -39,6 +40,7 @@
 				</div>
 			</div>
 		</div>
+		{{ end }}
 	</article>
 </div>
 {{end}}
