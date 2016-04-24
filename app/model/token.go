@@ -15,7 +15,7 @@ type Token struct {
 	ExpireTime int64
 }
 
-func CreateToken(u *User, context *Golf.Context, expire int64) *Token {
+func CreateToken(u *User, context *golf.Context, expire int64) *Token {
 	t := new(Token)
 	t.UserId = u.Id
 	t.CreateTime = utils.NowUnix()

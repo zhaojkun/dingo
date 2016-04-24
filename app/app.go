@@ -1,27 +1,44 @@
 package Dingo
 
 import (
+	"fmt"
 	"github.com/dinever/dingo/app/handler"
 	"github.com/dinever/dingo/app/model"
 	"github.com/dinever/dingo/app/utils"
 	"github.com/dinever/golf"
 	"path/filepath"
-	"fmt"
+	"os"
 )
 
 var (
-	App *Golf.Application
+	App *golf.Application
 )
 
 func Init() {
-	App = Golf.New()
+	App = golf.New()
 	model.Initialize("dingo.db")
 
 	App.Config.Set("app/static_dir", "static")
 	App.Config.Set("app.log_dir", "tmp/log")
 	App.Config.Set("app/upload_dir", "upload")
 	upload_dir, _ := App.Config.GetString("app/upload_dir", "upload")
+	registerMiddlewares()
+	registerFuncMap()
+	handler.RegisterFunctions(App)
+	theme := model.GetSettingValue("theme2")
+	App.View.SetTemplateLoader("base", "view")
+	App.View.SetTemplateLoader("admin", filepath.Join("view", "admin"))
+	App.View.SetTemplateLoader("theme", filepath.Join("view", theme))
+	//	static_dir, _ := App.Config.GetString("app/static_dir", "static")
+	App.Static("/upload/", upload_dir)
+	App.Static("/", filepath.Join("view", "admin", "assets"))
+	App.Static("/", filepath.Join("view", theme, "assets"))
 
+	App.SessionManager = golf.NewMemorySessionManager()
+	App.Error(404, handler.NotFoundHandler)
+}
+
+func registerFuncMap() {
 	App.View.FuncMap["DateFormat"] = utils.DateFormat
 	App.View.FuncMap["DateInt64"] = utils.DateInt64
 	App.View.FuncMap["DateString"] = utils.DateString
@@ -32,17 +49,10 @@ func Init() {
 	App.View.FuncMap["Setting"] = model.GetSettingValue
 	App.View.FuncMap["Navigator"] = model.GetNavigators
 	App.View.FuncMap["Md2html"] = utils.Markdown2HtmlTemplate
-	handler.RegisterFunctions(App)
-	theme := model.GetSettingValue("theme")
-	App.View.SetTemplateLoader("base", "view")
-	App.View.SetTemplateLoader("admin", filepath.Join("view", "admin"))
-	App.View.SetTemplateLoader("theme", filepath.Join("view", theme))
-	//	static_dir, _ := App.Config.GetString("app/static_dir", "static")
-	App.Static("/upload/", upload_dir)
-	App.Static("/", filepath.Join("view", "admin", "assets"))
-	App.Static("/", filepath.Join("view", theme, "assets"))
+}
 
-	App.NotFoundHandler = handler.NotFoundHandler
+func registerMiddlewares() {
+	App.Use(golf.LoggingMiddleware(os.Stdout), golf.RecoverMiddleware, golf.SessionMiddleware, golf.XSRFProtectionMiddleware)
 }
 
 func CreateSampleData() {
@@ -52,7 +62,7 @@ func CreateSampleData() {
 }
 
 func registerAdminURLHandlers() {
-	authChain := Golf.NewChain(handler.AuthMiddleware)
+	authChain := golf.NewChain(handler.AuthMiddleware)
 	App.Get("/login/", handler.AuthLoginPageHandler)
 	App.Post("/login/", handler.AuthLoginHandler)
 
@@ -100,15 +110,15 @@ func registerAdminURLHandlers() {
 }
 
 func registerHomeHandler() {
-	statsChain := Golf.NewChain()
+	statsChain := golf.NewChain()
 	App.Get("/", statsChain.Final(handler.HomeHandler))
-	App.Get("/page/:page/?", handler.HomeHandler)
+	App.Get("/page/:page/", handler.HomeHandler)
 	App.Post("/comment/:id/", handler.CommentHandler)
-	App.Get("/tag/:tag/?", handler.TagHandler)
-	App.Get("/tag/:tag/page/:page/?", handler.TagHandler)
-	App.Get("/feed/?", handler.RssHandler)
+	App.Get("/tag/:tag/", handler.TagHandler)
+	App.Get("/tag/:tag/page/:page/", handler.TagHandler)
+	App.Get("/feed/", handler.RssHandler)
 	App.Get("/sitemap.xml", handler.SiteMapHandler)
-	App.Get("/:slug/?", statsChain.Final(handler.ContentHandler))
+	App.Get("/:slug/", statsChain.Final(handler.ContentHandler))
 }
 
 func Run(portNumber string) {

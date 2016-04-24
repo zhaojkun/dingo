@@ -12,13 +12,13 @@ import (
 	"time"
 )
 
-func RegisterFunctions(app *Golf.Application) {
+func RegisterFunctions(app *golf.Application) {
 	app.View.FuncMap["Tags"] = getAllTags
 	app.View.FuncMap["RecentArticles"] = getRecentPosts
 }
 
-func HomeHandler(ctx *Golf.Context) {
-	p, _ := ctx.Param("page")
+func HomeHandler(ctx *golf.Context) {
+	p := ctx.Param("page")
 	page, _ := strconv.Atoi(p)
 	articles, pager, err := model.GetPostList(int64(page), 5, false, true, "published_at DESC")
 	if err != nil {
@@ -34,8 +34,8 @@ func HomeHandler(ctx *Golf.Context) {
 	ctx.Loader("theme").Render("index.html", data)
 }
 
-func ContentHandler(ctx *Golf.Context) {
-	slug, _ := ctx.Param("slug")
+func ContentHandler(ctx *golf.Context) {
+	slug := ctx.Param("slug")
 	article, err := model.GetPostBySlug(slug)
 	if err != nil {
 		log.Printf("[Error]: %v", err)
@@ -56,8 +56,8 @@ func ContentHandler(ctx *Golf.Context) {
 	}
 }
 
-func CommentHandler(ctx *Golf.Context) {
-	id, _ := ctx.Param("id")
+func CommentHandler(ctx *golf.Context) {
+	id := ctx.Param("id")
 	cid, _ := strconv.Atoi(id)
 	post, err := model.GetPostById(int64(cid))
 	if cid < 1 || err != nil {
@@ -119,10 +119,10 @@ func validateComment(c *model.Comment) string {
 	return ""
 }
 
-func TagHandler(ctx *Golf.Context) {
-	p, _ := ctx.Param("page")
+func TagHandler(ctx *golf.Context) {
+	p := ctx.Param("page")
 	page, _ := strconv.Atoi(p)
-	t, _ := ctx.Param("tag")
+	t := ctx.Param("tag")
 	tagSlug, _ := url.QueryUnescape(t)
 	tag, err := model.GetTagBySlug(tagSlug)
 	if err != nil {
@@ -139,7 +139,7 @@ func TagHandler(ctx *Golf.Context) {
 	ctx.Loader("theme").Render("tag.html", data)
 }
 
-func SiteMapHandler(ctx *Golf.Context) {
+func SiteMapHandler(ctx *golf.Context) {
 	baseUrl := model.GetSettingValue("site_url")
 	articles, _, _ := model.GetPostList(1, 50, false, true, "published_at DESC")
 	navigators := model.GetNavigators()
@@ -168,7 +168,7 @@ func SiteMapHandler(ctx *Golf.Context) {
 		navMap = append(navMap, m)
 	}
 
-	ctx.Header["Content-Type"] = "application/rss+xml;charset=UTF-8"
+	ctx.SetHeader("Content-Type", "application/rss+xml;charset=UTF-8")
 	ctx.Loader("base").Render("sitemap.xml", map[string]interface{}{
 		"Title":      model.GetSettingValue("site_title"),
 		"Link":       baseUrl,
@@ -178,7 +178,7 @@ func SiteMapHandler(ctx *Golf.Context) {
 	})
 }
 
-func RssHandler(ctx *Golf.Context) {
+func RssHandler(ctx *golf.Context) {
 	baseUrl := model.GetSettingValue("site_url")
 	articles, _, _ := model.GetPostList(1, 20, false, true, "published_at DESC")
 	articleMap := make([]map[string]string, len(articles))
@@ -192,7 +192,7 @@ func RssHandler(ctx *Golf.Context) {
 		articleMap[i] = m
 	}
 
-	ctx.Header["Content-Type"] = "text/xml; charset=utf-8"
+	ctx.SetHeader("Content-Type", "text/xml; charset=utf-8")
 
 	ctx.Loader("base").Loader("base").Render("rss.xml", map[string]interface{}{
 		"Title":    model.GetSettingValue("site_title"),

@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/dinever/dingo/app/utils"
 	"github.com/twinj/uuid"
 	"log"
@@ -240,6 +241,7 @@ func GetPostCreationDateById(post_id int64) (*time.Time, error) {
 
 func GetPostById(id int64) (*Post, error) {
 	// Get post
+	println(id)
 	row := db.QueryRow(stmtGetPostById, id)
 	return extractPost(row)
 }
@@ -441,7 +443,7 @@ func extractPost(row *sql.Row) (*Post, error) {
 	// Get user
 	post.Author, err = GetUserById(post.userId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Can not find user by id == %v", post.userId)
 	}
 	// Get tags
 	post.Tags, err = GetTags(post.Id)

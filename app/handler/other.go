@@ -4,8 +4,14 @@ import (
 	"github.com/dinever/golf"
 )
 
-func NotFoundHandler(ctx *Golf.Context) {
-	ctx.StatusCode = 404
-	data := map[string]interface{}{}
-	ctx.Loader("theme").Render("404.html", data)
+func NotFoundHandler(ctx *golf.Context, data ...map[string]interface{}) {
+	var renderData map[string]interface{}
+	ctx.SendStatus(404)
+	println("FUCKED UP")
+	if len(data) == 0 {
+		renderData = make(map[string]interface{})
+	} else {
+		renderData = data[0]
+	}
+	ctx.Loader("theme").Render("404.html", renderData)
 }

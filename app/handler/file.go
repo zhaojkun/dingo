@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-func FileViewHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func FileViewHandler(ctx *golf.Context) {
+	user, _ := ctx.Session.Get("user")
 	uploadDir, _ := ctx.App.Config.GetString("upload_dir", "upload")
 	uploadDir = path.Clean(uploadDir)
 	dir, err := ctx.Query("dir")
@@ -43,7 +43,7 @@ func FileViewHandler(ctx *Golf.Context) {
 	})
 }
 
-func FileRemoveHandler(ctx *Golf.Context) {
+func FileRemoveHandler(ctx *golf.Context) {
 	p := ctx.Request.FormValue("path")
 	uploadDir, _ := ctx.App.Config.GetString("upload_dir", "upload")
 	if model.CheckSafe(p, uploadDir) {
@@ -60,7 +60,7 @@ func FileRemoveHandler(ctx *Golf.Context) {
 	})
 }
 
-func FileUploadHandler(ctx *Golf.Context) {
+func FileUploadHandler(ctx *golf.Context) {
 	req := ctx.Request
 	req.ParseMultipartForm(32 << 20)
 	f, h, e := req.FormFile("file")

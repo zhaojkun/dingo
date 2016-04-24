@@ -9,8 +9,9 @@ import (
 	"time"
 )
 
-func AdminHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func AdminHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	ctx.Loader("admin").Render("home.html", map[string]interface{}{
 		"Title":    "Dashboard",
 		"Statis":   model.NewStatis(),
@@ -20,16 +21,18 @@ func AdminHandler(ctx *Golf.Context) {
 	})
 }
 
-func ProfileHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func ProfileHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	ctx.Loader("admin").Render("profile.html", map[string]interface{}{
 		"Title": "Profile",
 		"User":  user,
 	})
 }
 
-func ProfileChangeHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func ProfileChangeHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	if user.Email != ctx.Request.FormValue("email") && !model.UserChangeEmail(ctx.Request.FormValue("email")) {
 		ctx.JSON(map[string]interface{}{"res": false, "msg": "A user with that email address already exists."})
 		return
@@ -50,8 +53,9 @@ func ProfileChangeHandler(ctx *Golf.Context) {
 	ctx.JSON(map[string]interface{}{"res": true})
 }
 
-func PostCreateHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func PostCreateHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	c := model.NewPost()
 	ctx.Loader("admin").Render("edit_article.html", map[string]interface{}{
 		"Title": "New Post",
@@ -60,16 +64,13 @@ func PostCreateHandler(ctx *Golf.Context) {
 	})
 }
 
-func PostSaveHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func PostSaveHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	p := model.NewPost()
-	id, err := ctx.Param("id")
-	if err != nil {
-		p.Id = 0
-	} else {
-		idInt, _ := strconv.Atoi(id)
-		p.Id = int64(idInt)
-	}
+	id := ctx.Param("id")
+	idInt, _ := strconv.Atoi(id)
+	p.Id = int64(idInt)
 	p.Title = ctx.Request.FormValue("title")
 	p.Slug = ctx.Request.FormValue("slug")
 	p.Markdown = ctx.Request.FormValue("content")
@@ -81,7 +82,7 @@ func PostSaveHandler(ctx *Golf.Context) {
 	p.UpdatedBy = user.Id
 	p.IsPublished = ctx.Request.FormValue("status") == "on"
 	p.IsPage = false
-	p.Author = ctx.Data["user"].(*model.User)
+	p.Author = user
 	p.Hits = 1
 	var e error
 	e = p.Save()
@@ -97,8 +98,9 @@ func PostSaveHandler(ctx *Golf.Context) {
 	})
 }
 
-func AdminPostHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func AdminPostHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	i, _ := strconv.Atoi(ctx.Request.FormValue("page"))
 	articles, pager, err := model.GetPostList(int64(i), 10, false, false, "created_at DESC")
 	if err != nil {
@@ -112,9 +114,10 @@ func AdminPostHandler(ctx *Golf.Context) {
 	})
 }
 
-func PostEditHandler(ctx *Golf.Context) {
-	id, _ := ctx.Param("id")
-	user := ctx.Data["user"].(*model.User)
+func PostEditHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
+	id := ctx.Param("id")
 	articleId, _ := strconv.Atoi(id)
 	c, err := model.GetPostById(int64(articleId))
 	if c == nil || err != nil {
@@ -128,8 +131,8 @@ func PostEditHandler(ctx *Golf.Context) {
 	})
 }
 
-func PostRemoveHandler(ctx *Golf.Context) {
-	id, _ := ctx.Param("id")
+func PostRemoveHandler(ctx *golf.Context) {
+	id := ctx.Param("id")
 	articleId, _ := strconv.Atoi(id)
 	err := model.DeletePostById(int64(articleId))
 	if err != nil {
@@ -143,8 +146,9 @@ func PostRemoveHandler(ctx *Golf.Context) {
 	}
 }
 
-func PageCreateHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func PageCreateHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	c := model.NewPost()
 	ctx.Loader("admin").Render("edit_article.html", map[string]interface{}{
 		"Title": "New Page",
@@ -153,8 +157,9 @@ func PageCreateHandler(ctx *Golf.Context) {
 	})
 }
 
-func AdminPageHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func AdminPageHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	i, _ := strconv.Atoi(ctx.Request.FormValue("page"))
 	pages, pager, err := model.GetPostList(int64(i), 10, true, false, `created_at`)
 	if err != nil {
@@ -168,8 +173,9 @@ func AdminPageHandler(ctx *Golf.Context) {
 	})
 }
 
-func PageSaveHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func PageSaveHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	p := model.NewPost()
 	p.Id = 0
 	if !model.PostChangeSlug(ctx.Request.FormValue("slug")) {
@@ -188,7 +194,7 @@ func PageSaveHandler(ctx *Golf.Context) {
 	p.CreatedBy = user.Id
 	p.IsPublished = ctx.Request.FormValue("status") == "on"
 	p.IsPage = true
-	p.Author = ctx.Data["user"].(*model.User)
+	p.Author = user
 	p.Hits = 1
 	var e error
 	e = p.Save()
@@ -205,9 +211,9 @@ func PageSaveHandler(ctx *Golf.Context) {
 	})
 }
 
-func CommentViewHandler(ctx *Golf.Context) {
+func CommentViewHandler(ctx *golf.Context) {
 	i, _ := strconv.Atoi(ctx.Request.FormValue("page"))
-	user := ctx.Data["user"].(*model.User)
+	user, _ := ctx.Session.Get("user")
 	comments, pager, err := model.GetCommentList(int64(i), 10)
 	if err != nil {
 		panic(err)
@@ -220,13 +226,14 @@ func CommentViewHandler(ctx *Golf.Context) {
 	})
 }
 
-func CommentAddHandler(ctx *Golf.Context) {
+func CommentAddHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	pid, _ := strconv.Atoi(ctx.Request.FormValue("pid"))
 	parent, err := model.GetCommentById(int64(pid))
 	if err != nil {
 		panic(err)
 	}
-	user := ctx.Data["user"].(*model.User)
 	comment := new(model.Comment)
 	comment.Author = user.Name
 	comment.Email = user.Email
@@ -253,7 +260,7 @@ func CommentAddHandler(ctx *Golf.Context) {
 	model.CreateMessage("comment", comment)
 }
 
-func CommentUpdateHandler(ctx *Golf.Context) {
+func CommentUpdateHandler(ctx *golf.Context) {
 	id, _ := strconv.Atoi(ctx.Request.FormValue("id"))
 	c, err := model.GetCommentById(int64(id))
 	if err != nil {
@@ -269,7 +276,7 @@ func CommentUpdateHandler(ctx *Golf.Context) {
 	})
 }
 
-func CommentRemoveHandler(ctx *Golf.Context) {
+func CommentRemoveHandler(ctx *golf.Context) {
 	id, _ := strconv.Atoi(ctx.Request.FormValue("id"))
 	err := model.DeleteComment(int64(id))
 	if err != nil {
@@ -283,8 +290,8 @@ func CommentRemoveHandler(ctx *Golf.Context) {
 	})
 }
 
-func SettingViewHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func SettingViewHandler(ctx *golf.Context) {
+	user, _ := ctx.Session.Get("user")
 	ctx.Loader("admin").Render("setting.html", map[string]interface{}{
 		"Title":      "Settings",
 		"User":       user,
@@ -293,8 +300,9 @@ func SettingViewHandler(ctx *Golf.Context) {
 	})
 }
 
-func SettingUpdateHandler(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func SettingUpdateHandler(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	var err error
 	for key, value := range ctx.Request.Form {
 		setting := new(model.Setting)
@@ -319,7 +327,7 @@ func SettingUpdateHandler(ctx *Golf.Context) {
 	})
 }
 
-func SettingCustomHandler(ctx *Golf.Context) {
+func SettingCustomHandler(ctx *golf.Context) {
 	keys := ctx.Request.Form["key"]
 	values := ctx.Request.Form["value"]
 	for i, k := range keys {
@@ -333,7 +341,7 @@ func SettingCustomHandler(ctx *Golf.Context) {
 	})
 }
 
-func SettingNavHandler(ctx *Golf.Context) {
+func SettingNavHandler(ctx *golf.Context) {
 	labels := ctx.Request.Form["label"]
 	urls := ctx.Request.Form["url"]
 	model.SetNavigators(labels, urls)
@@ -342,16 +350,17 @@ func SettingNavHandler(ctx *Golf.Context) {
 	})
 }
 
-func AdminPasswordPage(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func AdminPasswordPage(ctx *golf.Context) {
+	user, _ := ctx.Session.Get("user")
 	ctx.Loader("admin").Render("password.html", map[string]interface{}{
 		"Title": "Change Password",
 		"User":  user,
 	})
 }
 
-func AdminPasswordChange(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func AdminPasswordChange(ctx *golf.Context) {
+	userObj, _ := ctx.Session.Get("user")
+	user := userObj.(*model.User)
 	oldPassword := ctx.Request.FormValue("old")
 	if !user.CheckPassword(oldPassword) {
 		ctx.JSON(map[string]interface{}{
@@ -367,8 +376,8 @@ func AdminPasswordChange(ctx *Golf.Context) {
 	})
 }
 
-func AdminMonitorPage(ctx *Golf.Context) {
-	user := ctx.Data["user"].(*model.User)
+func AdminMonitorPage(ctx *golf.Context) {
+	user, _ := ctx.Session.Get("user")
 	ctx.Loader("admin").Render("monitor.html", map[string]interface{}{
 		"Title":   "Monitor",
 		"User":    user,
