@@ -22,7 +22,7 @@ func AuthSignUpPageHandler(ctx *golf.Context) {
 		return
 	}
 	if userNum == 0 {
-		ctx.Loader("admin").Render("signup.html", nil)
+		ctx.Loader("admin").Render("signup.html", make(map[string]interface{}))
 	} else {
 		ctx.Abort(404)
 		return
@@ -160,15 +160,15 @@ func AuthMiddleware(next golf.HandlerFunc) golf.HandlerFunc {
 		//		user, _ := model.GetUserByEmail("dingpeixuan911@gmail.com")
 		//		ctx.Data["user"] = user
 		//		next(ctx)
+		userNum, err := model.GetNumberOfUsers()
+		if err == nil {
+			if userNum == 0 {
+				ctx.Redirect("/signup/")
+				return
+			}
+		}
 		tokenStr, err := ctx.Request.Cookie("token-value")
 		if err == nil {
-			userNum, err := model.GetNumberOfUsers()
-			if err == nil {
-				if userNum == 0 {
-					ctx.Redirect("/signup/")
-					return
-				}
-			}
 			token := model.GetTokenByValue(tokenStr.Value)
 			if token != nil && token.IsValid() {
 				tokenUser, err := ctx.Request.Cookie("token-user")

@@ -56,7 +56,6 @@ func registerMiddlewares() {
 		golf.LoggingMiddleware(os.Stdout),
 		golf.RecoverMiddleware,
 		golf.SessionMiddleware,
-		golf.XSRFProtectionMiddleware,
 	)
 }
 

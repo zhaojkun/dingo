@@ -162,7 +162,6 @@ func AdminPageHandler(ctx *golf.Context) {
 	user := userObj.(*model.User)
 	i, _ := strconv.Atoi(ctx.Request.FormValue("page"))
 	pages, pager, err := model.GetPostList(int64(i), 10, true, false, `created_at`)
-	println(pages)
 	if err != nil {
 		panic(err)
 	}
