@@ -409,7 +409,7 @@ func extractPosts(rows *sql.Rows) ([]*Post, error) {
 		// Get user
 		post.Author, err = GetUserById(post.userId)
 		if err != nil {
-			return nil, err
+			post.Author = ghostUser
 		}
 		// Get tags
 		post.Tags, err = GetTags(post.Id)
@@ -447,7 +447,7 @@ func extractPost(row *sql.Row) (*Post, error) {
 	// Get user
 	post.Author, err = GetUserById(post.userId)
 	if err != nil {
-		return nil, fmt.Errorf("Can not find user by id == %v", post.userId)
+		post.Author = ghostUser
 	}
 	// Get tags
 	post.Tags, err = GetTags(post.Id)

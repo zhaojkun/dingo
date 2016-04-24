@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/dinever/golf"
 	"github.com/dinever/dingo/app/model"
+	"github.com/dinever/golf"
 	"strconv"
 )
 

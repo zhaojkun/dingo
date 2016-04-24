@@ -22,11 +22,14 @@ type User struct {
 	Role     int    //1 = Administrator, 2 = Editor, 3 = Author, 4 = Owner
 }
 
+var ghostUser = &User{Id: 0, Name: "Dingo User", Email: "example@example.com"}
+
 func (u *User) Save(hashedPassword string, createdBy int64) error {
-	_, err := InsertUser(u.Name, u.Slug, hashedPassword, u.Email, u.Image, u.Cover, time.Now(), createdBy)
+	id, err := InsertUser(u.Name, u.Slug, hashedPassword, u.Email, u.Image, u.Cover, time.Now(), createdBy)
 	if err != nil {
 		return err
 	}
+	u.Id = id
 	//	err = InsertRoleUser(u.Role, userId)
 	//	if err != nil {
 	//		return err

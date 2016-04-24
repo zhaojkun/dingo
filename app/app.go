@@ -16,7 +16,10 @@ var (
 
 func Init() {
 	App = golf.New()
-	model.Initialize("dingo.db")
+	err := model.Initialize("dingo.db")
+	if err != nil {
+		panic(err)
+	}
 
 	App.Config.Set("app/static_dir", "static")
 	App.Config.Set("app.log_dir", "tmp/log")
