@@ -4,6 +4,10 @@ This project is under heavy development and is not ready for use. We'd love to h
 
 A blog engine written in Go.
 
+## Screenshots
+
+![Dingo](https://cloud.githubusercontent.com/assets/1311594/14765958/0e6dcccc-09c7-11e6-96f3-5487b6732371.png)
+
 ## Main Features
 
 - **Blog Comments**: Dingo has a built-in comment system.
