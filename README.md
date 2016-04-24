@@ -25,6 +25,14 @@ $ cd $GOPATH/src/github.com/dinever/dingo
 $ go run main.go --port 8000
 ```
 
+## Contributing
+
+**Warning**: This project currently contains a lot of shit code.
+
+To contribute, please take a look at our [roadmap](https://github.com/dinever/dingo/issues/7) to find the issue that you would like to work on.
+
+To read the source code, please start from the [URL endpoints](https://github.com/dinever/dingo/blob/master/app/app.go#L71)
+
 ## Admin Panel
 
 Plase visit [http://localhost:8000/signup/](http://localhost:8000/signup/) to register a new user and [http://localhost:8000/login/](http://localhost:8000/login/) to log into the admin panel.
