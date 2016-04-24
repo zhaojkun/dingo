@@ -1,0 +1,203 @@
+.button {
+	@extend %extend_2;
+	&:hover {
+		@extend %extend_3;
+	}
+	&.button-social {
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		line-height: 36px;
+		color: $white;
+		background-color: $color_storm_dust_approx;
+		text-align: center;
+		//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+		border-radius: 50%;
+		//Instead of the line below you could use @include background-clip($clip)
+		background-clip: padding-box;
+		&:hover {
+			color: $white;
+			background-color: $black;
+		}
+		i {
+			line-height: 36px;
+		}
+	}
+	&.button-twitter {
+		background-color: $blue;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-facebook {
+		background-color: $color_azure_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-google-plus {
+		background-color: $color_valencia_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-linkedin {
+		background-color: $color_deep_cerulean_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-pinterest {
+		background-color: $color_monza_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-youtube {
+		background-color: $color_thunderbird_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-vimeo {
+		background-color: $color_scooter_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-vine {
+		background-color: $color_persian_green_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-flickr {
+		background-color: $color_science_blue_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-instagram {
+		background-color: $color_astral_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-tumblr {
+		background-color: $color_pickled_bluewood_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-dribbble {
+		background-color: $color_french_rose_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-yahoo {
+		background-color: $color_purple_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-github {
+		background-color: $color_steel_blue_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&.button-rss {
+		background-color: $color_orange_approx;
+		color: $white;
+		text-decoration: none;
+		&:hover {
+			background-color: $black;
+			color: $white;
+			text-decoration: none;
+		}
+	}
+	&:not(.button-social) > i.mdi:first-child {
+		margin-right: 5px;
+	}
+}
+button {
+	@extend %extend_2;
+	&:hover {
+		@extend %extend_3;
+	}
+}
+input[type=button] {
+	@extend %extend_2;
+	&:hover {
+		@extend %extend_3;
+	}
+}
+input[type=reset] {
+	@extend %extend_2;
+	&:hover {
+		@extend %extend_3;
+	}
+}
+input[type=submit] {
+	@extend %extend_2;
+	&:hover {
+		@extend %extend_3;
+	}
+}
