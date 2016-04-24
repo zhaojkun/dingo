@@ -56,6 +56,5 @@ func ExtractBundleBytes() error {
 }
 
 func Install() {
-	ExtractBundleBytes()
-	println("Install complete")
+	println("Installation complete")
 }
