@@ -2,6 +2,9 @@
 
 {{ define "content"}}
 <div id="content" class="content-home">
+  <div class="tag-info">
+    <h3 class="tag-name">Tag: {{ .Tag.Name }}</h3>
+  </div>
   <div class="row">
     {{ range .Articles }}
     <article class="post tag-news tag-media featured col-sm-12">

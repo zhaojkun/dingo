@@ -273,7 +273,6 @@ blockquote::after {
   #content .author-info .author-bio {
     margin-bottom: 0; }
 #content .tag-info {
-  margin-bottom: 40px;
   border-bottom: 2px solid #87a2bd; }
   #content .tag-info .tag-name {
     margin-top: 0; }
