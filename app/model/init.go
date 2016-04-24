@@ -5,42 +5,11 @@ import (
 	"github.com/dinever/dingo/app/utils"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
+	"time"
 )
 
 var db *sql.DB
 
-type Row interface {
-	Scan(dest ...interface{}) error
-}
-
-func Initialize(dbPath string) error {
-	tokens = make(map[string]*Token)
-
-	var err error
-	_, errDB := os.Stat(dbPath)
-	db, err = sql.Open("sqlite3", dbPath)
-	if err != nil {
-		return err
-	}
-	_, err = db.Exec(schema)
-	if err != nil {
-		return err
-	}
-	if errDB != nil {
-		err = CreateWelcomeData()
-		if err != nil {
-			panic(err)
-		}
-	}
-	checkBlogSettings()
-	return nil
-}
-
-func checkBlogSettings() {
-	SetSettingIfNotExists("theme", "default", "blog")
-	SetSettingIfNotExists("title", "My Blog", "blog")
-	SetSettingIfNotExists("description", "Awesome blog created by Dingo.", "blog")
-}
 
 const samplePostContent = `
 Welcome to Dingo! This is your first post. You can find it in the [admin panel](/admin/).
@@ -93,7 +62,7 @@ import "fmt"
 func main() {
 	fmt.Println("hello world")
 }
-` + "````" + `
+` + "```" + `
 
 Link:
 
@@ -107,6 +76,39 @@ Table:
 | From y | 3         | 0         | 6         |
 | From z | 4         | 6         | 0         |
 `
+
+type Row interface {
+	Scan(dest ...interface{}) error
+}
+
+func Initialize(dbPath string) error {
+	tokens = make(map[string]*Token)
+
+	var err error
+	_, errDB := os.Stat(dbPath)
+	db, err = sql.Open("sqlite3", dbPath)
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(schema)
+	if err != nil {
+		return err
+	}
+	if errDB != nil {
+		err = CreateWelcomeData()
+		if err != nil {
+			panic(err)
+		}
+	}
+	checkBlogSettings()
+	return nil
+}
+
+func checkBlogSettings() {
+	SetSettingIfNotExists("theme", "default", "blog")
+	SetSettingIfNotExists("title", "My Blog", "blog")
+	SetSettingIfNotExists("description", "Awesome blog created by Dingo.", "blog")
+}
 
 func CreateWelcomeData() error {
 	var err error
@@ -127,5 +129,21 @@ func CreateWelcomeData() error {
 	if err != nil {
 		return err
 	}
-	return nil
+
+	c := new(Comment)
+	c.Author = "Shawn Ding"
+	c.Email = "dingpeixuan911@gmail.com"
+	c.Website = "http://github.com/dinever/dingo"
+	c.Content = "Welcome to Dingo! This is your first comment."
+	c.Avatar = utils.Gravatar(c.Email, "50")
+	c.PostId = p.Id
+	c.Parent = int64(0)
+	c.Ip = "127.0.0.1"
+	c.UserAgent = "Mozilla"
+	c.UserId = 0
+	c.Approved = true
+	createdAt := time.Now()
+	c.CreatedAt = &createdAt
+	_, err = c.Save()
+	return err
 }
