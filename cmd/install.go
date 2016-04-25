@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 )
 
-var (
+const (
 	tmpZipFile = "tmp.zip"
 	dbFile     = "dingo.db"
 )
